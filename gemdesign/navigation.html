@@ -1,0 +1,79 @@
+<html lang='zh-CN'>
+        <head >
+        <meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title >理课研习社</title>
+<script src='https://cdn.tailwindcss.com'></script>
+<link href='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+<script >tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        secondary: '#0d9488',
+        lightblue: '#eff6ff',
+        lightgray: '#f3f4f6'
+      }
+    }
+  }
+};</script>
+<style type='text/tailwindcss'>
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+<style >
+        .active-menu {
+            color: #1e40af !important;
+            position: relative;
+        }
+        .active-menu i {
+            color: #1e40af;
+        }
+    </style>
+    </head>
+<body class='flex flex-col h-screen bg-gray-50'>
+        <main class='flex-grow overflow-hidden'>
+        <div class='flex justify-center items-center h-full'>
+        <iframe id='navigation' src class width='100%' height='100%' srcdoc>
+        </iframe>
+    </div>
+    </main>
+<footer class='bg-white shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-10'>
+        <nav class='flex justify-around items-center px-2 py-3'>
+        <div class='flex flex-col items-center px-4 py-1 cursor-pointer active-menu' onclick='ytCustomClickRouter(this, event)' data-uuid='index'>
+        <i class='fas fa-home text-xl mb-1 text-gray-500'>
+        </i>
+<span class='text-xs'>
+        首页
+    </span>
+    </div>
+<div class='flex flex-col items-center px-4 py-1 cursor-pointer' onclick='ytCustomClickRouter(this, event)' data-uuid='search_result'>
+        <i class='fas fa-compass text-xl mb-1 text-gray-500'>
+        </i>
+<span class='text-xs'>
+        研习
+    </span>
+    </div>
+<div class='flex flex-col items-center px-4 py-1 cursor-pointer' onclick='ytCustomClickRouter(this, event)' data-uuid='equipment_list'>
+        <i class='fas fa-flask text-xl mb-1 text-gray-500'>
+        </i>
+<span class='text-xs'>
+        器材
+    </span>
+    </div>
+<div class='flex flex-col items-center px-4 py-1 cursor-pointer' onclick='ytCustomClickRouter(this, event)' data-uuid='profile'>
+        <i class='fas fa-user text-xl mb-1 text-gray-500'>
+        </i>
+<span class='text-xs'>
+        我的
+    </span>
+    </div>
+    </nav>
+    </footer>
+<script >// 监听子页面大小变化，调整iframe的高度
+ytGetIframeResize(document.getElementById('navigation'));</script>
+    </body>
+    </html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>理课研习社 - 沉浸式短视频 Demo</title>
+  <style>
+    :root {
+      --primary: #2B6FF2;
+      --bg: #000000;
+      --text: #FFFFFF;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif; background: var(--bg); color: var(--text); overflow: hidden; }
+    
+    /* 模拟手机壳 */
+    .phone-frame {
+      width: 100vw; height: 100dvh; position: relative; overflow: hidden;
+    }
+    @media (min-width: 768px) {
+      body { display: flex; justify-content: center; align-items: center; background: #E5E7EB; min-height: 100vh; }
+      .phone-frame { width: 390px; height: 844px; border-radius: 40px; border: 8px solid #1F2937; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+    }
+
+    /* 沉浸式滑动容器 */
+    .feed-container {
+      width: 100%; height: 100%; overflow-y: scroll; scroll-snap-type: y mandatory;
+      scrollbar-width: none; /* Firefox */
+    }
+    .feed-container::-webkit-scrollbar { display: none; /* Chrome */ }
+
+    /* 单个视频卡片 */
+    .video-item {
+      width: 100%; height: 100%; scroll-snap-align: start; position: relative;
+      background-size: cover; background-position: center;
+    }
+    
+    /* 顶部返回键 */
+    .top-nav { position: absolute; top: 40px; left: 16px; z-index: 10; display: flex; align-items: center; gap: 10px; text-shadow: 0 1px 2px rgba(0,0,0,0.5); font-weight: 600; }
+    .back-btn { width: 32px; height: 32px; background: rgba(0,0,0,0.4); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); font-size: 18px; cursor: pointer; }
+
+    /* 渐变遮罩，保证文字可见 */
+    .video-mask {
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 100%); pointer-events: none;
+    }
+
+    /* ================= 右侧交互区 (纯正抖音风格) ================= */
+    .right-sidebar {
+      position: absolute; right: 10px; bottom: 120px; display: flex; flex-direction: column; align-items: center; gap: 18px; z-index: 10;
+    }
+    .action-btn { 
+      display: flex; flex-direction: column; align-items: center; gap: 4px; color: #fff; font-size: 13px; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.6); cursor: pointer; transition: transform 0.1s; 
+    }
+    .action-btn:active { transform: scale(0.9); }
+    
+    /* 纯白 SVG 配合底部阴影替代背景框 */
+    .action-icon {
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); 
+    }
+    .action-icon svg { width: 100%; height: 100%; fill: #fff; transition: fill 0.2s;}
+    
+    /* 抖音同款头像与关注按钮 */
+    .avatar-wrapper { 
+      width: 48px; height: 48px; border-radius: 50%; border: 1.5px solid #fff; margin-bottom: 14px; background: #5B8FFF; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 20px; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    .follow-plus { 
+      position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); 
+      width: 20px; height: 20px; background: #FF2C55; border-radius: 50%; 
+      font-size: 18px; display: flex; align-items: center; justify-content: center; line-height: 1; border: 1.5px solid #fff; color: white;
+    }
+    
+    /* 点赞后的变红动效辅助 */
+    .action-btn.liked .action-icon svg { fill: #FF2C55; }
+
+    /* ================= 左下角信息区 ================= */
+    .bottom-info {
+      position: absolute; left: 16px; bottom: 100px; right: 80px; z-index: 10;
+    }
+    .author-name { font-size: 16px; font-weight: 600; margin-bottom: 6px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: flex; align-items: center; gap: 6px;}
+    .video-title { font-size: 15px; line-height: 1.4; margin-bottom: 8px; text-shadow: 0 1px 2px rgba(0,0,0,0.8); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;}
+    .tags-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .tag { background: rgba(255,255,255,0.2); backdrop-filter: blur(4px); padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+    .expand-detail { font-size: 13px; color: rgba(255,255,255,0.8); display: inline-flex; align-items: center; background: rgba(0,0,0,0.4); padding: 4px 10px; border-radius: 20px; cursor: pointer; }
+
+    /* ================= 底部转化条 (还原设计图) ================= */
+    .material-anchor {
+      position: absolute; bottom: 20px; left: 16px; right: 16px;
+      background: rgba(245, 248, 255, 0.95); backdrop-filter: blur(10px);
+      border-radius: 16px; padding: 10px 14px; display: flex; align-items: center;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2); z-index: 20;
+      animation: slideUp 0.5s ease-out; cursor: pointer;
+    }
+    @keyframes slideUp { from { transform: translateY(100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .mat-images { display: flex; align-items: center; }
+    .mat-img { width: 32px; height: 32px; border-radius: 6px; border: 1.5px solid #fff; background: #ccc; margin-left: -10px; object-fit: cover;}
+    .mat-img:first-child { margin-left: 0; }
+    .mat-text { flex: 1; margin-left: 12px; color: #1A1A1A; }
+    .mat-title { font-size: 13px; font-weight: 600; margin-bottom: 2px;}
+    .mat-subtitle { font-size: 11px; color: #6B7280; }
+    .mat-btn { background: #1E3A8A; color: white; border: none; padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 4px; pointer-events: none;}
+
+    /* ================= 详情弹窗 (还原图2内容) ================= */
+    .bottom-sheet-mask {
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5); z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+    }
+    .bottom-sheet {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 70vh;
+      background: #F6F8FB; border-radius: 20px 20px 0 0; z-index: 100;
+      transform: translateY(100%); transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex; flex-direction: column; color: #1A1A1A;
+    }
+    .bottom-sheet.show { transform: translateY(0); }
+    .bottom-sheet-mask.show { opacity: 1; pointer-events: auto; }
+    .sheet-header { padding: 16px; display: flex; justify-content: space-between; align-items: center; font-size: 16px; font-weight: bold; background: #fff; border-radius: 20px 20px 0 0; position: sticky; top: 0; z-index: 2;}
+    .sheet-close { width: 30px; height: 30px; background: #F3F4F6; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #6B7280; cursor: pointer;}
+    .sheet-body { padding: 16px; overflow-y: auto; flex: 1; padding-bottom: 40px; }
+
+    /* 弹窗内的卡片样式 */
+    .detail-card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.02); }
+    .card-title { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #111827; }
+    .desc-text { font-size: 14px; color: #4B5563; line-height: 1.5; margin-bottom: 12px; }
+    .stats-text { font-size: 13px; color: #6B7280; display: flex; align-items: center; gap: 4px; margin-bottom: 16px;}
+    .grid-info { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13px; margin-bottom: 12px; }
+    .grid-info span { color: #6B7280; }
+    .highlight-item { display: flex; align-items: flex-start; gap: 8px; font-size: 14px; color: #374151; margin-bottom: 10px; }
+    .check-icon { color: #10B981; font-size: 16px; margin-top: 2px;}
+
+    .btn-full { width: 100%; background: #1E3A8A; color: white; padding: 12px; border-radius: 10px; border: none; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer;}
+    .btn-outline { width: 100%; background: #fff; color: #1E3A8A; border: 1px solid #1E3A8A; padding: 12px; border-radius: 10px; font-size: 15px; font-weight: 600; display: flex; justify-content: center; align-items: center; gap: 8px; cursor: pointer;}
+    .btn-hint { text-align: center; font-size: 12px; color: #6B7280; margin-bottom: 16px;}
+
+  </style>
+</head>
+<body>
+
+<div class="phone-frame">
+  
+  <div class="top-nav">
+    <div class="back-btn" onclick="alert('返回上一页')">←</div>
+    <span>推荐研习</span>
+  </div>
+
+  <div class="feed-container">
+    
+    <div class="video-item" style="background-image: url('https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+      
+      <div style="position:absolute; top:45%; left:50%; transform:translate(-50%,-50%); width:60px; height:60px; background:rgba(255,255,255,0.3); border-radius:50%; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(4px);">
+        <div style="width: 0; height: 0; border-top: 10px solid transparent; border-bottom: 10px solid transparent; border-left: 16px solid white; margin-left: 4px;"></div>
+      </div>
+
+      <div class="video-mask"></div>
+
+      <div class="right-sidebar">
+        
+        <div class="action-btn">
+          <div class="avatar-wrapper">张<div class="follow-plus" onclick="this.style.display='none'">+</div></div>
+        </div>
+        
+        <div class="action-btn" onclick="this.classList.toggle('liked')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          </div>
+          <span>1.2w</span>
+        </div>
+        
+        <div class="action-btn" onclick="alert('打开评论区')">
+          <div class="action-icon">
+            <svg viewBox="0 0 24 24"><path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14l4 4-.01-18zM18 14H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+          </div>
+          <span>讨论</span>
+        </div>
+        
+        <div class="action-btn" onclick="openSheet()">
+          <div class="action-icon">
+             <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zM6 20V4h7v5h5v11H6z"/></svg>
+          </div>
+          <span>教案</span>
+        </div>
+        
+        <div class="action-btn" onclick="openSheet()">
+          <div class="action-icon">
+             <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <span>完整版</span>
+        </div>
+        
+        <div class="action-btn" onclick="alert('分享课例给教研组同事')">
+          <div class="action-icon">
+             <svg viewBox="0 0 24 24"><path d="M14 5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11V5z"/></svg>
+          </div>
+          <span>分享</span>
+        </div>
+        
+      </div>
+
+      <div class="bottom-info">
+        <div class="author-name">@张老师 | 南京金陵中学</div>
+        <div class="video-title">巧用矿泉水瓶展示大气压强，课堂导入必备神仙操作！</div>
+        <div class="tags-row">
+          <span class="tag">八年级下册</span>
+          <span class="tag">压强与浮力</span>
+          <span class="tag">创新实验</span>
+        </div>
+        <div class="expand-detail" onclick="openSheet()">
+          查看课例详情与资料 📝
+        </div>
+      </div>
+
+      <div class="material-anchor" onclick="alert('触发：弹出详细器材列表与试用申请表单')">
+        <div class="mat-images">
+          <img src="https://images.unsplash.com/photo-1603539947678-cd3954ed515d?w=100&h=100&fit=crop" class="mat-img">
+          <img src="https://images.unsplash.com/photo-1581093458791-9f3c3900df4b?w=100&h=100&fit=crop" class="mat-img" style="z-index: 2;">
+          <img src="https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=100&h=100&fit=crop" class="mat-img" style="z-index: 3;">
+        </div>
+        <div class="mat-text">
+          <div class="mat-title">本课研习配套器材包</div>
+          <div class="mat-subtitle">共 5 件器材</div>
+        </div>
+        <button class="mat-btn">
+          <span>≡</span> 查看清单
+        </button>
+      </div>
+    </div>
+
+    <div class="video-item" style="background-image: url('https://images.unsplash.com/photo-1507413245164-6160d8298b31?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80');">
+       <div class="video-mask"></div>
+       <div style="position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); color:white; font-size:24px; font-weight:bold; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">向上滑动查看下一个研习课例</div>
+    </div>
+
+  </div>
+
+  <div class="bottom-sheet-mask" id="sheetMask" onclick="closeSheet()"></div>
+  <div class="bottom-sheet" id="detailSheet">
+    <div class="sheet-header">
+      <span>课例详情与资源</span>
+      <div class="sheet-close" onclick="closeSheet()">×</div>
+    </div>
+    <div class="sheet-body">
+      
+      <div class="detail-card">
+        <div class="card-title">课例简介</div>
+        <div class="desc-text">通过生活化材料展示大气压强现象，适合作为八年级物理导入实验。</div>
+        <div class="stats-text">🔥 12,800 老师正在研习</div>
+        <div class="grid-info">
+          <div><span>适用年级：</span>八年级</div>
+          <div><span>实验类型：</span>创新演示实验</div>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+          <span style="background:#EEF2FF; color:#2B6FF2; padding:4px 10px; border-radius:12px; font-size:12px;">大气压强</span>
+          <span style="background:#EEF2FF; color:#2B6FF2; padding:4px 10px; border-radius:12px; font-size:12px;">力学</span>
+          <span style="background:#EEF2FF; color:#2B6FF2; padding:4px 10px; border-radius:12px; font-size:12px;">低成本实验</span>
+        </div>
+      </div>
+
+      <div class="detail-card">
+        <div class="card-title">实验亮点</div>
+        <div class="highlight-item"><span class="check-icon">✓</span> 取材方便，使用日常生活常见材料</div>
+        <div class="highlight-item"><span class="check-icon">✓</span> 现象明显，学生能直观观察物理过程</div>
+        <div class="highlight-item"><span class="check-icon">✓</span> 操作简单，适合课堂分组实验</div>
+      </div>
+
+      <div class="detail-card" style="background: transparent; box-shadow: none; padding: 0;">
+        <div class="card-title" style="margin-left: 4px;">完整教学资源</div>
+        <button class="btn-full" onclick="alert('开始播放 18 分钟完整录像')">▶ 查看完整说课</button>
+        <div class="btn-hint">观看 18 分钟 完整比赛录像</div>
+        
+        <button class="btn-outline" onclick="alert('教案链接已复制')">📄 复制教案下载链接</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function openSheet() {
+    document.getElementById('sheetMask').classList.add('show');
+    document.getElementById('detailSheet').classList.add('show');
+  }
+  
+  function closeSheet() {
+    document.getElementById('sheetMask').classList.remove('show');
+    document.getElementById('detailSheet').classList.remove('show');
+  }
+</script>
+
+</body>
+</html>

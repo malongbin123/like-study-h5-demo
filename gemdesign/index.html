@@ -1,0 +1,372 @@
+<html lang='zh-CN'>
+        <head >
+        <meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title >理课研习社 - 首页</title>
+<script src='https://cdn.tailwindcss.com'></script>
+<link href='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+<script >tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        secondary: '#0d9488',
+        lightblue: '#eff6ff',
+        lightgray: '#f3f4f6'
+      }
+    }
+  }
+};</script>
+<style type='text/tailwindcss'>
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .bg-grid {
+                background-image: linear-gradient(rgba(30, 64, 175, 0.05) 1px, transparent 1px),
+                                  linear-gradient(90deg, rgba(30, 64, 175, 0.05) 1px, transparent 1px);
+                background-size: 20px 20px;
+            }
+        }
+    </style>
+<style >
+        body {
+            background-color: #f8fafc;
+        }
+        .experiment-lab {
+            background: linear-gradient(180deg, #dbeafe 0%, #eff6ff 100%);
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .experiment-lab::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(0deg, rgba(148, 163, 184, 0.2) 0%, transparent 100%);
+            border-radius: 0 0 16px 16px;
+        }
+    </style>
+    </head>
+<body class='min-h-screen bg-gray-50'>
+        <div class='p-4 bg-grid'>
+        <!-- 顶部品牌区 -->
+<div class='experiment-lab mb-6 p-6 relative z-10'>
+        <div class='relative z-10'>
+        <h1 class='text-3xl font-bold text-primary mb-1'>
+        理课研习社
+    </h1>
+<p class='text-primary/70 text-sm mb-2'>
+        初中物理说课与实验研习平台
+    </p>
+<p class='text-secondary italic text-sm'>
+        看名师课例，配实验器材
+    </p>
+    </div>
+<div class='absolute -bottom-6 -right-6 opacity-10'>
+        <i class='fas fa-flask text-[120px] text-primary'>
+        </i>
+    </div>
+    </div>
+<!-- 搜索区 -->
+<div class='mb-6'>
+        <div class='relative'>
+        <input type='text' placeholder='搜索：浮力怎么引入 / 自制压强计 / 滑动变阻器怎么连' class='w-full pl-10 pr-12 py-3 rounded-full bg-white shadow-sm border border-gray-100 focus:outline-none focus:ring-2 focus:ring-primary/20 text-sm'/>
+<i class='fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400'>
+        </i>
+<button class='absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary'>
+        <i class='fas fa-filter'>
+        </i>
+    </button>
+    </div>
+    </div>
+<!-- 快捷导航区 -->
+<div class='mb-8'>
+        <h2 class='text-lg font-semibold text-gray-800 mb-4'>
+        快速导航
+    </h2>
+<div class='grid grid-cols-2 gap-4'>
+        <div class='bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer' onclick='handleMenuClick(this)' data-uuid='search_result'>
+        <div class='flex items-center'>
+        <div class='w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-primary mr-3'>
+        <i class='fas fa-book'>
+        </i>
+    </div>
+<div >
+        <h3 class='font-medium text-gray-800'>
+        八年级物理研习
+    </h3>
+    </div>
+    </div>
+    </div>
+<div class='bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer' onclick='handleMenuClick(this)' data-uuid='search_result'>
+        <div class='flex items-center'>
+        <div class='w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center text-primary mr-3'>
+        <i class='fas fa-graduation-cap'>
+        </i>
+    </div>
+<div >
+        <h3 class='font-medium text-gray-800'>
+        九年级物理研习
+    </h3>
+    </div>
+    </div>
+    </div>
+<div class='bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer' onclick='handleMenuClick(this)' data-uuid='search_result'>
+        <div class='flex items-center'>
+        <div class='w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-secondary mr-3'>
+        <i class='fas fa-certificate'>
+        </i>
+    </div>
+<div >
+        <h3 class='font-medium text-gray-800'>
+        中考必做实验
+    </h3>
+    </div>
+    </div>
+    </div>
+<div class='bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer' onclick='handleMenuClick(this)' data-uuid='search_result'>
+        <div class='flex items-center'>
+        <div class='w-10 h-10 rounded-lg bg-emerald-100 flex items-center justify-center text-secondary mr-3'>
+        <i class='fas fa-star'>
+        </i>
+    </div>
+<div >
+        <h3 class='font-medium text-gray-800'>
+        名师创新实验
+    </h3>
+    </div>
+    </div>
+    </div>
+<div class='bg-white rounded-xl shadow-sm p-4 border border-gray-100 hover:shadow-md transition-shadow cursor-pointer col-span-2' onclick='handleMenuClick(this)' data-uuid='search_result'>
+        <div class='flex items-center'>
+        <div class='w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 mr-3'>
+        <i class='fas fa-recycle'>
+        </i>
+    </div>
+<div >
+        <h3 class='font-medium text-gray-800'>
+        低成本自制教具
+    </h3>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+<!-- 推荐课例展示区 -->
+<div >
+        <div class='flex justify-between items-center mb-4'>
+        <div >
+        <h2 class='text-lg font-semibold text-gray-800'>
+        优秀课例
+    </h2>
+<p class='text-xs text-gray-500'>
+        精选 1-3 分钟名师实验说课片段
+    </p>
+    </div>
+<a href='javascript:void(0);' onclick='handleMenuClick(this)' data-uuid='search_result' class='text-primary text-sm flex items-center'>
+        更多
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </a>
+    </div>
+<div class='space-y-4'>
+        <!-- 课例卡片 1 -->
+<div class='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer' onclick='handleMenuClick(this)' data-uuid='video_detail'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=atmospheric%20pressure%20physics%20experiment%20mineral%20water%20bottle,%20teaching%20video%20cover,%20education%20style,%20blue%20theme&image_size=landscape_16_9' alt='巧用矿泉水瓶展示大气压强' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3'>
+        <div class='flex items-center text-white text-xs'>
+        <i class='fas fa-play-circle mr-1'>
+        </i>
+<span >
+        2:15
+    </span>
+    </div>
+    </div>
+<div class='absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-md text-xs flex items-center'>
+        <i class='fas fa-eye mr-1'>
+        </i>
+2.3k
+    </div>
+    </div>
+<div class='p-4'>
+        <h3 class='font-semibold text-gray-800 mb-2'>
+        巧用矿泉水瓶展示大气压强
+    </h3>
+<div class='flex flex-wrap gap-2 mb-3'>
+        <span class='px-2 py-1 bg-primary/10 text-primary text-xs rounded-full'>
+        国家级一等奖
+    </span>
+<span class='px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full'>
+        力学探究
+    </span>
+<span class='px-2 py-1 bg-amber-100 text-amber-700 text-xs rounded-full'>
+        低成本实验
+    </span>
+    </div>
+<div class='flex justify-between items-center text-sm text-gray-500'>
+        <span >
+        <i class='fas fa-flask mr-1'>
+        </i>
+配套器材 4 件
+    </span>
+<span >
+        王老师 · 省级名师
+    </span>
+    </div>
+    </div>
+    </div>
+<!-- 课例卡片 2 -->
+<div class='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer' onclick='handleMenuClick(this)' data-uuid='video_detail'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=sliding%20rheostat%20correct%20connection%20physics%20experiment,%20teaching%20cover,%20education%20style&image_size=landscape_16_9' alt='滑动变阻器的正确接法' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3'>
+        <div class='flex items-center text-white text-xs'>
+        <i class='fas fa-play-circle mr-1'>
+        </i>
+<span >
+        1:48
+    </span>
+    </div>
+    </div>
+<div class='absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-md text-xs flex items-center'>
+        <i class='fas fa-eye mr-1'>
+        </i>
+5.1k
+    </div>
+    </div>
+<div class='p-4'>
+        <h3 class='font-semibold text-gray-800 mb-2'>
+        滑动变阻器的正确接法
+    </h3>
+<div class='flex flex-wrap gap-2 mb-3'>
+        <span class='px-2 py-1 bg-primary/10 text-primary text-xs rounded-full'>
+        重点考点
+    </span>
+<span class='px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full'>
+        电学基础
+    </span>
+<span class='px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full'>
+        中考必看
+    </span>
+    </div>
+<div class='flex justify-between items-center text-sm text-gray-500'>
+        <span >
+        <i class='fas fa-flask mr-1'>
+        </i>
+配套器材 3 件
+    </span>
+<span >
+        李老师 · 特级教师
+    </span>
+    </div>
+    </div>
+    </div>
+<!-- 课例卡片 3 -->
+<div class='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer' onclick='handleMenuClick(this)' data-uuid='video_detail'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=homemade%20micro%20pressure%20gauge%20physics%20experiment,%20teaching%20cover,%20education&image_size=landscape_16_9' alt='自制微小压强计' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3'>
+        <div class='flex items-center text-white text-xs'>
+        <i class='fas fa-play-circle mr-1'>
+        </i>
+<span >
+        2:52
+    </span>
+    </div>
+    </div>
+<div class='absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-md text-xs flex items-center'>
+        <i class='fas fa-eye mr-1'>
+        </i>
+1.8k
+    </div>
+    </div>
+<div class='p-4'>
+        <h3 class='font-semibold text-gray-800 mb-2'>
+        自制微小压强计
+    </h3>
+<div class='flex flex-wrap gap-2 mb-3'>
+        <span class='px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded-full'>
+        创新实验
+    </span>
+<span class='px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full'>
+        液体压强
+    </span>
+<span class='px-2 py-1 bg-pink-100 text-pink-700 text-xs rounded-full'>
+        学生探究
+    </span>
+    </div>
+<div class='flex justify-between items-center text-sm text-gray-500'>
+        <span >
+        <i class='fas fa-flask mr-1'>
+        </i>
+配套器材 5 件
+    </span>
+<span >
+        张老师 · 教研组长
+    </span>
+    </div>
+    </div>
+    </div>
+<!-- 课例卡片 4 -->
+<div class='bg-white rounded-xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer mb-10' onclick='handleMenuClick(this)' data-uuid='video_detail'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Archimedes%20principle%20physics%20experiment%20buoyancy,%20teaching%20cover,%20education%20style&image_size=landscape_16_9' alt='阿基米德原理探究' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3'>
+        <div class='flex items-center text-white text-xs'>
+        <i class='fas fa-play-circle mr-1'>
+        </i>
+<span >
+        3:05
+    </span>
+    </div>
+    </div>
+<div class='absolute top-3 right-3 bg-black/60 text-white px-2 py-1 rounded-md text-xs flex items-center'>
+        <i class='fas fa-eye mr-1'>
+        </i>
+3.2k
+    </div>
+    </div>
+<div class='p-4'>
+        <h3 class='font-semibold text-gray-800 mb-2'>
+        阿基米德原理探究
+    </h3>
+<div class='flex flex-wrap gap-2 mb-3'>
+        <span class='px-2 py-1 bg-primary/10 text-primary text-xs rounded-full'>
+        课标要求
+    </span>
+<span class='px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full'>
+        浮力
+    </span>
+<span class='px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full'>
+        探究实验
+    </span>
+    </div>
+<div class='flex justify-between items-center text-sm text-gray-500'>
+        <span >
+        <i class='fas fa-flask mr-1'>
+        </i>
+配套器材 6 件
+    </span>
+<span >
+        赵老师 · 一等奖获得者
+    </span>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+<script >function handleMenuClick(element) {
+  var uuid = element.getAttribute('data-uuid');
+  window.top.postMessage(uuid, '*');
+}
+
+// 通知父页面调整iframe高度
+ytSendPageSize();</script>
+    </body>
+    </html>

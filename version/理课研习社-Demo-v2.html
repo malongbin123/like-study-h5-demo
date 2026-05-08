@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>理课研习社 · Demo V2</title>
+  <style>
+    :root {
+      --primary: #2B6FF2;
+      --primary-light: #5B8FFF;
+      --accent: #F59E0B;
+      --text: #1A1A1A;
+      --text-secondary: #6B7280;
+      --bg: #F6F8FB;
+      --card-bg: #FFFFFF;
+      --border: #EBEDF0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+    }
+    .phone-frame {
+      width: 100%;
+      height: 100dvh;
+      margin: 0 auto;
+      background: var(--bg);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+    /* 桌面端保留手机壳预览 */
+    @media (min-width: 768px) {
+      body {
+        background: #E5E7EB;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+      }
+      .phone-frame {
+        width: 385px;
+        height: 740px;
+        border-radius: 36px;
+        border: 8px solid #1F2937;
+        outline: 2px solid #4B5563;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+        overflow: hidden;
+      }
+    }
+
+    #main-container {
+      flex: 1;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    #tabbar {
+      height: 50px;
+      background: #FFFFFF;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--border);
+      z-index: 10;
+      flex-shrink: 0;
+    }
+    .tab-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      color: #9CA3AF;
+      cursor: pointer;
+      flex: 1;
+      height: 100%;
+      transition: color 0.15s;
+    }
+    .tab-item.active { color: var(--primary); font-weight: 600; }
+    .tab-icon { font-size: 20px; margin-bottom: 2px; }
+
+    /* Popup 半屏弹窗 */
+    #popup-container {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 50;
+      pointer-events: none;
+    }
+    #popup-container.popup-show { pointer-events: auto; }
+    .popup-mask {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.45);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+    .popup-show .popup-mask { opacity: 1; }
+    .popup-content {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: #fff;
+      border-radius: 20px 20px 0 0;
+      transform: translateY(100%);
+      transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+      max-height: 72%;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .popup-show .popup-content { transform: translateY(0); }
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: #fff;
+      z-index: 1;
+    }
+    .popup-title { font-size: 16px; font-weight: 600; color: var(--text); }
+    .popup-close { font-size: 24px; color: #9CA3AF; cursor: pointer; line-height: 1; }
+    .popup-body { padding: 14px 18px 18px; }
+
+    /* Toast */
+    #toast {
+      position: absolute;
+      top: 30px; left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      background: rgba(0,0,0,0.78);
+      color: white;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 13px;
+      z-index: 60;
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* 通用组件 */
+    .page { height: 100%; overflow-y: auto; -webkit-overflow-scrolling: touch; background: var(--bg); }
+    .subpage-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: #fff;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      border-bottom: 1px solid var(--border);
+    }
+    .back-btn { font-size: 20px; margin-right: 10px; cursor: pointer; color: var(--text); }
+    .subpage-title { font-size: 16px; font-weight: 600; color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 18px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 500;
+      border: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+    .btn:active { opacity: 0.8; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-accent { background: var(--accent); color: white; }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-block { width: 100%; justify-content: center; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      background: #EEF2FF;
+      color: #2B6FF2;
+      margin-right: 4px;
+      margin-bottom: 2px;
+    }
+    .tag-orange { background: #FFF7ED; color: #F59E0B; }
+
+    /* 首页动态卡片 */
+    .feed-card {
+      background: #fff;
+      margin: 0 16px 12px;
+      border-radius: 14px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+      overflow: hidden;
+    }
+    .feed-header {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px 8px;
+    }
+    .feed-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #E0E7FF;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 16px;
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .feed-user-info {
+      flex: 1;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .feed-user-info .name {
+      font-weight: 600;
+      color: var(--text);
+      margin-right: 6px;
+    }
+    .feed-cover {
+      position: relative;
+      width: 100%;
+      height: 180px;
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .feed-play-btn {
+      width: 46px;
+      height: 46px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(4px);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 22px;
+      transition: transform 0.15s;
+    }
+    .feed-play-btn:active { transform: scale(0.95); }
+    .feed-body {
+      padding: 10px 14px;
+    }
+    .feed-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .feed-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 6px;
+    }
+    .feed-actions {
+      display: flex;
+      justify-content: space-around;
+      border-top: 1px solid var(--border);
+      padding: 8px 0;
+    }
+    .feed-action-btn {
+      background: none;
+      border: none;
+      font-size: 13px;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      transition: background 0.1s;
+    }
+    .feed-action-btn:active { background: #F3F4F6; }
+
+    /* 视频详情页 */
+    .video-detail-page {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+    }
+    .video-player-area {
+      position: relative;
+      width: 100%;
+      height: 55%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+    }
+    .video-controls-overlay {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .video-ctrl-btn {
+      width: 44px;
+      padding: 10px 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(6px);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      font-size: 11px;
+      border: none;
+      cursor: pointer;
+    }
+    .video-ctrl-btn .icon { font-size: 22px; margin-bottom: 2px; }
+    .video-back-btn {
+      position: absolute;
+      top: 14px;
+      left: 12px;
+      width: 32px;
+      height: 32px;
+      background: rgba(0,0,0,0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 18px;
+      backdrop-filter: blur(4px);
+      cursor: pointer;
+      border: none;
+    }
+    .video-info-panel {
+      flex: 1;
+      background: #fff;
+      padding: 16px;
+      border-radius: 16px 16px 0 0;
+      margin-top: -12px;
+      position: relative;
+      z-index: 1;
+      overflow-y: auto;
+    }
+    .video-title-main {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+    }
+    .video-meta-row {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .teacher-badge {
+      background: #F3F4F6;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 12px;
+      color: var(--text);
+    }
+    .material-hint {
+      background: #EEF2FF;
+      border-radius: 10px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .material-hint:active { background: #E0E7FF; }
+
+    /* 其他卡片与表单 */
+    .lesson-card {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      margin: 0 16px 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      cursor: pointer;
+    }
+    .card-cover {
+      height: 140px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-size: cover;
+      background-position: center;
+    }
+    .card-body {
+      padding: 10px 12px;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .card-meta {
+      font-size: 12px;
+      color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
+    }
+    .form-group { margin-bottom: 14px; }
+    .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 5px; }
+    .form-input {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+    }
+    .form-input:focus { border-color: var(--primary); }
+    .list-item {
+      background: #fff;
+      margin: 0 16px 10px;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .status-tag {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .status-pending { background: #FFF3CD; color: #856404; }
+    .status-contacted { background: #D4EDFF; color: #004085; }
+    .status-shipped { background: #D4EDDA; color: #155724; }
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 10px 16px;
+      overflow-x: auto;
+      white-space: nowrap;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      scrollbar-width: none;
+    }
+    .filter-tab {
+      flex-shrink: 0;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 13px;
+      background: #F3F4F6;
+      color: #6B7280;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tab.active { background: var(--primary); color: white; }
+    .quick-nav {
+      display: flex;
+      gap: 8px;
+      padding: 0 16px 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .nav-chip {
+      flex-shrink: 0;
+      padding: 10px 18px;
+      background: #fff;
+      border-radius: 20px;
+      font-size: 13px;
+      color: var(--text);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .nav-chip:active { background: #F3F4F6; }
+    .profile-header {
+      background: var(--primary);
+      color: white;
+      text-align: center;
+      padding: 28px 0;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      margin: 0 auto 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
+    .profile-name { font-size: 17px; font-weight: 600; }
+    .profile-school { font-size: 13px; opacity: 0.85; margin-top: 4px; }
+    .stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin: 16px 0;
+      font-size: 14px;
+    }
+    .stat-item { text-align: center; }
+    .stat-num { font-weight: 700; color: var(--primary); font-size: 18px; }
+    .stat-label { font-size: 12px; color: var(--text-secondary); }
+    .menu-item {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 14px;
+      color: var(--text);
+      cursor: pointer;
+    }
+    .menu-item:active { background: #F9FAFB; }
+    .divider { border-bottom: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+<div class="phone-frame" id="phoneFrame">
+  <div id="main-container"></div>
+  <div id="tabbar">
+    <div class="tab-item active" data-page="discover" onclick="switchTab('discover')">
+      <span class="tab-icon">🧭</span><span>发现</span>
+    </div>
+    <div class="tab-item" data-page="research" onclick="switchTab('research')">
+      <span class="tab-icon">📚</span><span>研习</span>
+    </div>
+    <div class="tab-item" data-page="category" onclick="switchTab('category')">
+      <span class="tab-icon">📊</span><span>分类</span>
+    </div>
+    <div class="tab-item" data-page="profile" onclick="switchTab('profile')">
+      <span class="tab-icon">👤</span><span>我的</span>
+    </div>
+  </div>
+  <div id="popup-container">
+    <div class="popup-mask" onclick="closePopup()"></div>
+    <div class="popup-content">
+      <div class="popup-header">
+        <span class="popup-title" id="popupTitle"></span>
+        <span class="popup-close" onclick="closePopup()">×</span>
+      </div>
+      <div class="popup-body" id="popupBody"></div>
+    </div>
+  </div>
+  <div id="toast"></div>
+</div>
+
+<script>
+  // ==================== Mock 数据 ====================
+  const lessonList = [
+    { id:1, title:'巧用矿泉水瓶展示大气压强', teacher:'张老师', school:'南京金陵中学', grade:'八年级', tags:['国家级一等奖','力学探究','低成本'], heat:12800, cover:'linear-gradient(135deg, #2b5876, #4e4376)', materials:[1,2,3], desc:'通过生活化材料展示大气压强现象，适合作为八年级物理导入实验。' },
+    { id:2, title:'探究凸透镜成像规律', teacher:'王老师', school:'杭州学军中学', grade:'八年级', tags:['中考必做','光学实验'], heat:8560, cover:'linear-gradient(135deg, #3a1c71, #d76d77, #ffaf7b)', materials:[4,5], desc:'经典光学实验，清晰展示凸透镜成像特点。' },
+    { id:3, title:'滑动变阻器的正确连接', teacher:'李老师', school:'北京四中', grade:'九年级', tags:['名师创新','电学实验'], heat:6200, cover:'linear-gradient(135deg, #0f0c29, #302b63, #24243e)', materials:[6,7], desc:'电学实验中滑动变阻器的接法与注意事项。' },
+    { id:4, title:'自制简易密度计', teacher:'刘老师', school:'广州执信中学', grade:'八年级', tags:['低成本','力学探究'], heat:4700, cover:'linear-gradient(135deg, #11998e, #38ef7d)', materials:[8], desc:'利用吸管和橡皮泥制作密度计，理解浮力原理。' },
+    { id:5, title:'探究液体内部压强规律', teacher:'陈老师', school:'上海中学', grade:'九年级', tags:['名师创新','力学探究'], heat:3900, cover:'linear-gradient(135deg, #fc4a1a, #f7b733)', materials:[1,3], desc:'使用微小压强计探究液体压强与深度的关系。' },
+    { id:6, title:'光的反射定律演示', teacher:'周老师', school:'武汉外国语学校', grade:'八年级', tags:['中考必做','光学实验'], heat:5100, cover:'linear-gradient(135deg, #4ca1af, #c4e0e5)', materials:[9,10], desc:'通过激光笔和平面镜展示光的反射定律。' },
+    { id:7, title:'电流表与电压表使用', teacher:'吴老师', school:'成都七中', grade:'九年级', tags:['名师创新','电学实验'], heat:3400, cover:'linear-gradient(135deg, #5c258d, #4389a2)', materials:[7,11], desc:'电路实验中正确连接电流表和电压表。' },
+    { id:8, title:'利用乒乓球演示浮力', teacher:'郑老师', school:'山东实验中学', grade:'八年级', tags:['低成本','力学探究'], heat:2800, cover:'linear-gradient(135deg, #b224ef, #7579ff)', materials:[12,13], desc:'用乒乓球和重物演示浮力产生原理。' }
+  ];
+  const materialList = [
+    { id:1, name:'微小压强计', count:'1套', usage:'观察液体内部压强变化' },
+    { id:2, name:'大烧杯', count:'2个', usage:'盛水和观察实验现象' },
+    { id:3, name:'特殊支架', count:'1套', usage:'固定实验装置' },
+    { id:4, name:'凸透镜', count:'1个', usage:'焦距10cm，成像实验' },
+    { id:5, name:'光具座', count:'1套', usage:'带刻度导轨' },
+    { id:6, name:'滑动变阻器', count:'1个', usage:'50Ω 1.5A' },
+    { id:7, name:'电流表', count:'1个', usage:'测量电流' },
+    { id:8, name:'密度计套件', count:'1套', usage:'吸管、橡皮泥等' },
+    { id:9, name:'激光笔', count:'1支', usage:'演示光路' },
+    { id:10, name:'平面镜', count:'1块', usage:'反射定律' },
+    { id:11, name:'电压表', count:'1个', usage:'测量电压' },
+    { id:12, name:'乒乓球', count:'1个', usage:'浮力演示' },
+    { id:13, name:'重物', count:'1块', usage:'配合乒乓球' }
+  ];
+
+  let currentPage = 'discover';
+  let currentParams = {};
+  let pageHistory = [];
+  const favorites = new Set([1,3]);
+  let applyRecords = [
+    { id:1, lessonTitle:'巧用矿泉水瓶展示大气压强', materials:['微小压强计','大烧杯','特殊支架'], status:'等待处理', time:'2026-04-29 15:30' },
+    { id:2, lessonTitle:'滑动变阻器的正确连接', materials:['滑动变阻器','电流表'], status:'已电话联系', time:'2026-04-25 10:15' }
+  ];
+  let purchaseOrders = [
+    { id:1, lessonTitle:'巧用矿泉水瓶展示大气压强', school:'南京金陵中学', time:'2026-04-28', status:'已导出' }
+  ];
+
+  const mc = document.getElementById('main-container');
+  const popup = document.getElementById('popup-container');
+  const toast = document.getElementById('toast');
+  const tabbar = document.getElementById('tabbar');
+
+  function showToast(msg) {
+    if (window._t) clearTimeout(window._t);
+    toast.textContent = msg;
+    toast.classList.add('show');
+    window._t = setTimeout(() => toast.classList.remove('show'), 1800);
+  }
+  function closePopup() { popup.classList.remove('popup-show'); }
+
+  function getMaterials(lid) {
+    const lesson = lessonList.find(l => l.id === lid);
+    if (!lesson?.materials) return [];
+    return lesson.materials.map(mid => materialList.find(m => m.id === mid)).filter(Boolean);
+  }
+
+  function showMaterialsPopup(lid) {
+    const mats = getMaterials(lid);
+    const icons = ['🔬','🧪','📐','🔍','📏','⚡','🔌','🧴','💡','🪞','🔌','🏓','⚖️'];
+    let html = `<p style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">共 ${mats.length} 件器材，适用于本课实验</p>`;
+    mats.forEach((m, idx) => {
+      html += `<div style="display:flex;align-items:center;background:#F7F8FA;border-radius:10px;padding:10px;margin-bottom:8px;">
+        <div style="width:40px;height:40px;background:#E0E7FF;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-right:10px;">${icons[idx % icons.length]}</div>
+        <div style="flex:1;">
+          <div style="font-weight:600;font-size:14px;">${m.name} × ${m.count}</div>
+          <div style="font-size:12px;color:var(--text-secondary);">${m.usage}</div>
+        </div>
+      </div>`;
+    });
+    html += `<div style="display:flex;gap:10px;margin-top:16px;">
+      <button class="btn btn-outline" style="flex:1;" onclick="closeAndNav('purchase',${lid})">导出采购单</button>
+      <button class="btn btn-accent" style="flex:1;" onclick="closeAndNav('apply',${lid})">申请免费试用</button>
+    </div>`;
+    document.getElementById('popupTitle').textContent = '本课实验器材包';
+    document.getElementById('popupBody').innerHTML = html;
+    popup.classList.add('popup-show');
+  }
+
+  function showPlanPopup(id) {
+    document.getElementById('popupTitle').textContent = '教案下载';
+    document.getElementById('popupBody').innerHTML = `
+      <p style="margin-bottom:10px;">完整教案链接（demo）</p>
+      <div style="background:#F3F4F6;padding:10px;border-radius:6px;word-break:break-all;font-size:13px;margin-bottom:12px;">https://example.com/plans/${id}</div>
+      <button class="btn btn-primary btn-block" onclick="copyText('https://example.com/plans/${id}')">复制下载链接</button>`;
+    popup.classList.add('popup-show');
+  }
+
+  function closeAndNav(page, id) {
+    closePopup();
+    navigateTo(page, { lessonId: id });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => showToast('链接已复制'));
+    } else {
+      showToast('链接已复制（可手动粘贴）');
+    }
+  }
+
+  function switchTab(page, params = {}) {
+    pageHistory = [];
+    currentPage = page;
+    currentParams = params;
+    render();
+  }
+
+  function navigateTo(page, params = {}) {
+    pageHistory.push({ page: currentPage, params: currentParams });
+    currentPage = page;
+    currentParams = params;
+    render();
+  }
+
+  function goBack() {
+    if (pageHistory.length > 0) {
+      const prev = pageHistory.pop();
+      currentPage = prev.page;
+      currentParams = prev.params;
+    } else {
+      currentPage = 'discover';
+      currentParams = {};
+    }
+    render();
+  }
+
+  function navigateToVideo(lessonId) {
+    navigateTo('videoDetail', { lessonId });
+  }
+
+  function toggleFav(id) {
+    if (favorites.has(id)) {
+      favorites.delete(id);
+      showToast('已取消收藏');
+    } else {
+      favorites.add(id);
+      showToast('已加入收藏');
+    }
+    if (currentPage === 'videoDetail') render();
+  }
+
+  function shareLesson() { showToast('链接已复制，可分享到微信教研群'); }
+
+  function submitApply(lid) {
+    const name = document.getElementById('applyName')?.value.trim();
+    const school = document.getElementById('applySchool')?.value.trim();
+    const phone = document.getElementById('applyPhone')?.value.trim();
+    if (!name || !school || !phone) return showToast('请完善信息');
+    const lesson = lessonList.find(l => l.id === lid);
+    applyRecords.unshift({
+      id: Date.now(),
+      lessonTitle: lesson.title,
+      materials: getMaterials(lid).map(m => m.name),
+      status: '等待处理',
+      time: new Date().toLocaleString()
+    });
+    showToast('提交成功，1-3个工作日内联系您');
+    navigateTo('records');
+  }
+
+  function exportPurchase(lid) {
+    const lesson = lessonList.find(l => l.id === lid);
+    purchaseOrders.unshift({
+      id: Date.now(),
+      lessonTitle: lesson.title,
+      school: '南京金陵中学',
+      time: new Date().toLocaleDateString(),
+      status: '已导出'
+    });
+    showToast('采购意向单已生成，可复制或打印');
+  }
+
+  function renderDiscover() {
+    const feedLessons = lessonList.slice(0,4);
+    return `
+    <div class="page">
+      <div style="background:#fff; padding:12px 16px;">
+        <div style="display:flex; align-items:center; background:#F2F3F5; border-radius:20px; padding:8px 14px;">
+          <span style="margin-right:8px; color:#9CA3AF;">🔍</span>
+          <input id="searchInput" placeholder="搜索教学痛点，如“浮力怎么引入”" style="flex:1; border:none; background:transparent; font-size:14px; outline:none; color:var(--text);" onkeypress="if(event.key==='Enter'){ const q=this.value.trim(); if(q) switchTab('category',{filter:'search',query:q}); }">
+        </div>
+      </div>
+      <div style="text-align:center; padding:14px 0 6px; font-size:14px; color:var(--text-secondary);">
+        理课研习社 · 让实验教学更顺手
+      </div>
+      <div class="quick-nav">
+        ${['八年级','九年级','中考必做','名师创新','低成本教具'].map((n,i)=> {
+          const f = ['grade8','grade9','exam','innovation','lowcost'][i];
+          return `<div class="nav-chip" onclick="switchTab('category',{filter:'${f}'})">${n}</div>`;
+        }).join('')}
+      </div>
+      <div style="padding:6px 16px 8px; font-size:15px; font-weight:600; color:var(--text);">今日研习动态</div>
+      ${feedLessons.map(lesson => {
+        const matsCount = lesson.materials.length;
+        return `
+        <div class="feed-card">
+          <div class="feed-header">
+            <div class="feed-avatar">${lesson.teacher[0]}</div>
+            <div class="feed-user-info">
+              <span class="name">${lesson.teacher}</span> ${lesson.school} · ${lesson.grade}物理
+              <div style="font-size:12px; color:#9CA3AF;">分享了说课片段</div>
+            </div>
+          </div>
+          <div class="feed-cover" style="background:${lesson.cover};" onclick="navigateToVideo(${lesson.id})">
+            <div class="feed-play-btn">▶</div>
+          </div>
+          <div class="feed-body">
+            <div class="feed-title">${lesson.title}</div>
+            <div>${lesson.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <div class="feed-meta">
+              <span>🔥 ${lesson.heat.toLocaleString()} 次研习</span>
+              <span>🧪 配套 ${matsCount} 件器材</span>
+            </div>
+          </div>
+          <div class="feed-actions">
+            <button class="feed-action-btn" onclick="toggleFav(${lesson.id});event.stopPropagation();">
+              ${favorites.has(lesson.id) ? '★' : '☆'} 收藏
+            </button>
+            <button class="feed-action-btn" onclick="shareLesson();event.stopPropagation();">💬 讨论</button>
+            <button class="feed-action-btn" onclick="showMaterialsPopup(${lesson.id});event.stopPropagation();">🧪 看器材</button>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`;
+  }
+
+  function renderVideoDetail() {
+    const lid = currentParams.lessonId || lessonList[0].id;
+    const lesson = lessonList.find(l => l.id === lid);
+    if (!lesson) return '<div class="page">课例未找到</div>';
+    const mats = getMaterials(lid);
+    const isFav = favorites.has(lid);
+    return `
+    <div class="video-detail-page">
+      <div class="video-player-area" style="background:${lesson.cover};">
+        <button class="video-back-btn" onclick="goBack()">←</button>
+        <div style="width:56px;height:56px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;color:white;backdrop-filter:blur(4px);">▶</div>
+        <div class="video-controls-overlay">
+          <button class="video-ctrl-btn" onclick="toggleFav(${lid})"><span class="icon">${isFav?'★':'☆'}</span>收藏</button>
+          <button class="video-ctrl-btn" onclick="shareLesson()"><span class="icon">↗</span>分享</button>
+          <button class="video-ctrl-btn" onclick="showMaterialsPopup(${lid})"><span class="icon">🧪</span>器材</button>
+          <button class="video-ctrl-btn" onclick="showPlanPopup(${lid})"><span class="icon">📄</span>教案</button>
+        </div>
+      </div>
+      <div class="video-info-panel">
+        <div class="video-title-main">${lesson.title}</div>
+        <div class="video-meta-row">
+          ${lesson.tags.map(t=>`<span class="tag">${t}</span>`).join('')}
+          <span>🔥 ${lesson.heat.toLocaleString()} 次研习</span>
+          <span class="teacher-badge">${lesson.teacher} · ${lesson.school}</span>
+        </div>
+        <p style="font-size:13px;color:var(--text-secondary);margin-bottom:14px;">${lesson.desc}</p>
+        <div class="material-hint" onclick="showMaterialsPopup(${lid})">
+          <div>
+            <div style="font-weight:600;font-size:14px;">本课配套实验器材</div>
+            <div style="font-size:12px;color:var(--text-secondary);">${mats.map(m=>m.name).join('、')} 等 ${mats.length} 件</div>
+          </div>
+          <span style="color:var(--primary);font-size:14px;">详情 ›</span>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderCategory() {
+    const filter = currentParams.filter || 'all';
+    const query = currentParams.query || '';
+    let title = '课例分类';
+    if (filter==='grade8') title='八年级物理研习';
+    else if (filter==='grade9') title='九年级物理研习';
+    else if (filter==='exam') title='中考必做实验';
+    else if (filter==='innovation') title='名师创新实验';
+    else if (filter==='lowcost') title='低成本自制教具';
+    else if (filter==='search') title=`搜索：“${query}”`;
+    let list = lessonList;
+    if (filter==='grade8') list = list.filter(l=>l.grade==='八年级');
+    else if (filter==='grade9') list = list.filter(l=>l.grade==='九年级');
+    else if (filter==='exam') list = list.filter(l=>l.tags.includes('中考必做'));
+    else if (filter==='innovation') list = list.filter(l=>l.tags.includes('名师创新'));
+    else if (filter==='lowcost') list = list.filter(l=>l.tags.includes('低成本'));
+    else if (filter==='search' && query) list = list.filter(l=> l.title.includes(query) || l.tags.some(t=>t.includes(query)));
+    const filters = ['all','grade8','grade9','exam','innovation','lowcost'];
+    const filterLabels = {all:'全部',grade8:'八年级',grade9:'九年级',exam:'中考必做',innovation:'名师创新',lowcost:'低成本'};
+    return `
+    <div class="page">
+      <div style="background:#fff; padding:8px 16px; border-bottom:1px solid var(--border);">
+        <div style="font-size:17px; font-weight:700; margin-bottom:8px;">${title}</div>
+        <div class="filter-tabs">
+          ${filters.map(f=>`<span class="filter-tab ${filter===f?'active':''}" onclick="switchTab('category',{filter:'${f}'})">${filterLabels[f]}</span>`).join('')}
+        </div>
+      </div>
+      <div style="padding-top:6px;">
+        ${list.length ? list.map(l => `
+          <div class="lesson-card" onclick="navigateToVideo(${l.id})">
+            <div class="card-cover" style="background:${l.cover};">
+              <div style="width:40px;height:40px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">▶</div>
+            </div>
+            <div class="card-body">
+              <div class="card-title">${l.title}</div>
+              <div style="margin:4px 0;">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+              <div class="card-meta"><span>🔥 ${l.heat.toLocaleString()}</span><span>关联 ${l.materials.length} 件器材</span></div>
+            </div>
+          </div>`).join('') : '<div style="text-align:center;padding:30px;color:var(--text-secondary);">暂无相关课例</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderResearch() {
+    return `
+    <div class="page">
+      <div style="padding:12px 16px 4px; font-size:16px; font-weight:600; color:var(--text);">优质课例</div>
+      ${lessonList.map(l => `
+        <div class="lesson-card" onclick="navigateToVideo(${l.id})">
+          <div class="card-cover" style="background:${l.cover};">
+            <div style="width:40px;height:40px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">▶</div>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${l.title}</div>
+            <div style="margin:4px 0;">${l.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+            <div class="card-meta"><span>🔥 ${l.heat.toLocaleString()}</span><span>关联 ${l.materials.length} 件器材</span></div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }
+
+  function renderProfile() {
+    return `
+    <div class="page">
+      <div class="profile-header">
+        <div class="profile-avatar">张</div>
+        <div class="profile-name">张老师</div>
+        <div class="profile-school">南京金陵中学 · 物理教师</div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-item"><div class="stat-num">${favorites.size}</div><div class="stat-label">收藏课例</div></div>
+        <div class="stat-item"><div class="stat-num">${applyRecords.length}</div><div class="stat-label">申请记录</div></div>
+        <div class="stat-item"><div class="stat-num">${purchaseOrders.length}</div><div class="stat-label">采购单</div></div>
+      </div>
+      <div style="background:#fff; margin:0 14px; border-radius:12px; overflow:hidden;">
+        <div class="menu-item" onclick="navigateTo('favorites')">⭐ 我的收藏库 <span style="float:right;color:#9CA3AF;">›</span></div>
+        <div class="divider"></div>
+        <div class="menu-item" onclick="navigateTo('records')">📋 我的申请记录 <span style="float:right;color:#9CA3AF;">›</span></div>
+        <div class="divider"></div>
+        <div class="menu-item" onclick="navigateTo('purchases')">📄 我的采购意向单 <span style="float:right;color:#9CA3AF;">›</span></div>
+        <div class="divider"></div>
+        <div class="menu-item" onclick="showToast('客服功能开发中')">💬 联系平台客服 <span style="float:right;color:#9CA3AF;">›</span></div>
+        <div class="divider"></div>
+        <div class="menu-item" onclick="showToast('理课研习社 V2.0 Demo')">ℹ️ 关于理课研习社 <span style="float:right;color:#9CA3AF;">›</span></div>
+      </div>
+    </div>`;
+  }
+
+  function renderFavorites() {
+    const favLessons = lessonList.filter(l => favorites.has(l.id));
+    return `
+    <div class="page">
+      <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">我的收藏</span></div>
+      <div style="padding-top:6px;">${favLessons.length ? favLessons.map(l => `
+        <div class="lesson-card" onclick="navigateToVideo(${l.id})">
+          <div class="card-cover" style="background:${l.cover};"><div style="width:40px;height:40px;background:rgba(0,0,0,0.5);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">▶</div></div>
+          <div class="card-body">
+            <div class="card-title">${l.title}</div>
+            <div class="card-meta"><span>🔥 ${l.heat.toLocaleString()}</span><span>关联 ${l.materials.length} 件器材</span></div>
+          </div>
+        </div>`).join('') : '<div style="text-align:center;padding:30px;color:var(--text-secondary);">暂无收藏</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderRecords() {
+    return `
+    <div class="page">
+      <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">申请记录</span></div>
+      <div style="padding-top:6px;">
+        ${applyRecords.length ? applyRecords.map(r => {
+          let cls = r.status.includes('等待') ? 'status-pending' : r.status.includes('电话') ? 'status-contacted' : 'status-shipped';
+          return `<div class="list-item">
+            <div style="font-weight:600;">${r.lessonTitle}</div>
+            <div style="font-size:12px;color:var(--text-secondary);margin:4px 0;">器材：${r.materials.join('、')}</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span class="status-tag ${cls}">${r.status}</span>
+              <span style="font-size:11px;color:#9CA3AF;">${r.time}</span>
+            </div>
+          </div>`;
+        }).join('') : '<div style="text-align:center;padding:30px;color:var(--text-secondary);">暂无申请记录</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderPurchases() {
+    return `
+    <div class="page">
+      <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">采购意向单</span></div>
+      <div style="padding-top:6px;">
+        ${purchaseOrders.length ? purchaseOrders.map(o => `
+          <div class="list-item">
+            <div style="font-weight:600;">${o.lessonTitle}</div>
+            <div style="font-size:12px;color:var(--text-secondary);">学校：${o.school} · ${o.time}</div>
+            <div style="font-size:12px;color:var(--text-secondary);">状态：${o.status}</div>
+          </div>`).join('') : '<div style="text-align:center;padding:30px;color:var(--text-secondary);">暂无采购意向单</div>'}
+      </div>
+    </div>`;
+  }
+
+  function renderApply() {
+    const lid = currentParams.lessonId;
+    const lesson = lessonList.find(l => l.id === lid);
+    const mats = getMaterials(lid);
+    return `
+    <div class="page">
+      <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">申请免费试用</span></div>
+      <div style="padding:14px;">
+        <div style="background:#EEF2FF; border-radius:10px; padding:12px; margin-bottom:14px; font-size:13px;">
+          <div style="font-weight:600; margin-bottom:6px;">来自课例：${lesson.title}</div>
+          <div>正在申请器材：${mats.map(m => m.name).join('、')}</div>
+          <div style="margin-top:6px; color:var(--text-secondary);">平台工作人员将在1-3个工作日内与您联系</div>
+        </div>
+        <div class="form-group"><label class="form-label">姓名</label><input class="form-input" id="applyName" placeholder="请输入姓名"></div>
+        <div class="form-group"><label class="form-label">学校名称</label><input class="form-input" id="applySchool" placeholder="请输入学校名称"></div>
+        <div class="form-group"><label class="form-label">联系电话</label><input class="form-input" id="applyPhone" placeholder="请输入联系电话"></div>
+        <div class="form-group"><label class="form-label">所在地区</label><input class="form-input" id="applyRegion" placeholder="省/市"></div>
+        <button class="btn btn-accent btn-block" onclick="submitApply(${lid})">提交申请</button>
+      </div>
+    </div>`;
+  }
+
+  function renderPurchase() {
+    const lid = currentParams.lessonId;
+    const lesson = lessonList.find(l => l.id === lid);
+    const mats = getMaterials(lid);
+    return `
+    <div class="page">
+      <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">采购意向单</span></div>
+      <div style="padding:14px;">
+        <div style="background:#fff; border-radius:12px; padding:14px; margin-bottom:14px;">
+          <div style="font-weight:600; margin-bottom:8px;">采购意向预览（可提交至学校总务处）</div>
+          <div style="font-size:13px;color:var(--text-secondary);">学校：南京金陵中学（demo）</div>
+          <div style="font-size:13px;color:var(--text-secondary);">教师：张老师 · 电话：138xxxx0000</div>
+          <div style="font-weight:600; margin:10px 0 6px;">课例：${lesson.title}</div>
+          <table style="width:100%; font-size:13px; border-collapse: collapse;">
+            <thead><tr style="background:#F3F4F6;"><th style="padding:6px;text-align:left;">器材</th><th style="text-align:center;">数量</th><th style="text-align:left;">用途</th></tr></thead>
+            <tbody>${mats.map(m => `<tr><td style="padding:6px;">${m.name}</td><td style="text-align:center;">${m.count}</td><td style="color:var(--text-secondary);">${m.usage}</td></tr>`).join('')}</tbody>
+          </table>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button class="btn btn-outline" style="flex:1;" onclick="copyText('采购单内容已复制（demo）')">复制内容</button>
+          <button class="btn btn-primary" style="flex:1;" onclick="exportPurchase(${lid})">模拟导出 Word</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function render() {
+    const tabPages = ['discover','research','category','profile'];
+    const showTab = tabPages.includes(currentPage);
+    if (showTab) {
+      tabbar.style.display = 'flex';
+    } else {
+      tabbar.style.display = 'none';
+    }
+    const tabs = tabbar.querySelectorAll('.tab-item');
+    tabs.forEach(tab => {
+      if (tab.dataset.page === currentPage) tab.classList.add('active');
+      else tab.classList.remove('active');
+    });
+
+    let html = '';
+    switch (currentPage) {
+      case 'discover': html = renderDiscover(); break;
+      case 'research': html = renderResearch(); break;
+      case 'category': html = renderCategory(); break;
+      case 'profile': html = renderProfile(); break;
+      case 'videoDetail': html = renderVideoDetail(); break;
+      case 'apply': html = renderApply(); break;
+      case 'purchase': html = renderPurchase(); break;
+      case 'favorites': html = renderFavorites(); break;
+      case 'records': html = renderRecords(); break;
+      case 'purchases': html = renderPurchases(); break;
+      default: html = renderDiscover();
+    }
+    mc.innerHTML = html;
+    closePopup();
+  }
+
+  // 挂载全局函数
+  window.switchTab = switchTab;
+  window.navigateTo = navigateTo;
+  window.goBack = goBack;
+  window.navigateToVideo = navigateToVideo;
+  window.toggleFav = toggleFav;
+  window.shareLesson = shareLesson;
+  window.showMaterialsPopup = showMaterialsPopup;
+  window.showPlanPopup = showPlanPopup;
+  window.closeAndNav = closeAndNav;
+  window.copyText = copyText;
+  window.submitApply = submitApply;
+  window.exportPurchase = exportPurchase;
+
+  render();
+</script>
+</body>
+</html>

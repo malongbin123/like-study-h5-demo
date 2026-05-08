@@ -1,0 +1,429 @@
+<html lang='zh-CN'>
+        <head >
+        <meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title >搜索结果 - 理课研习社</title>
+<script src='https://cdn.tailwindcss.com'></script>
+<link href='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+<script >tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        secondary: '#0d9488',
+        lightblue: '#eff6ff',
+        lightgray: '#f3f4f6'
+      }
+    }
+  }
+};</script>
+<style type='text/tailwindcss'>
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+<style >
+        .filter-drawer {
+            transition: transform 0.3s ease-out;
+        }
+        .filter-drawer.hidden {
+            transform: translateY(100%);
+            display: none !important;
+        }
+        .mask.hidden {
+            opacity: 0;
+            visibility: hidden;
+            display: none !important;
+        }
+    </style>
+    </head>
+<body class='bg-gray-50 min-h-screen'>
+        <div class='p-4'>
+        <div class='flex items-center mb-4 gap-3'>
+        <a href='javascript:void(0);' data-uuid='index' onclick='handleMenuClick(this)' class='text-gray-600 text-xl'>
+        <i class='fas fa-arrow-left'>
+        </i>
+    </a>
+<div class='relative flex-grow'>
+        <input type='text' placeholder='搜索：浮力怎么引入 / 自制压强计 / 滑动变阻器怎么连' class='w-full bg-gray-100 rounded-full py-2 px-4 !pl-10 text-sm focus:outline-none focus:ring-2 focus:ring-primary/30'/>
+<i class='fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400'>
+        </i>
+    </div>
+<button id='filterBtn' class='text-gray-600 text-xl'>
+        <i class='fas fa-sliders-h'>
+        </i>
+    </button>
+    </div>
+<div class='flex justify-between items-center mb-4'>
+        <div >
+        <p class='text-gray-600 text-sm'>
+        搜索「
+<span class='text-primary font-medium'>
+        大气压强
+    </span>
+」
+    </p>
+<p class='text-xs text-gray-400 mt-1'>
+        找到 24 个相关课例
+    </p>
+    </div>
+<div class='flex items-center gap-2 text-sm text-gray-600'>
+        <span >
+        排序
+    </span>
+<i class='fas fa-chevron-down text-xs'>
+        </i>
+    </div>
+    </div>
+<div class='flex gap-2 overflow-x-auto pb-3 mb-4 -mx-1 px-1'>
+        <button class='whitespace-nowrap px-3 py-1.5 bg-primary text-white rounded-full text-xs'>
+        全部结果
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        八年级
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        九年级
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        力学
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        光学
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        电学
+    </button>
+<button class='whitespace-nowrap px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs'>
+        国家级获奖
+    </button>
+    </div>
+<div class='space-y-4'>
+        <a href='javascript:void(0);' data-uuid='video_detail' onclick='handleMenuClick(this)' class='block bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=atmospheric%20pressure%20physics%20experiment%20teaching%20video%20cover,%20blue%20professional%20education%20style,%20experimental%20atmosphere&image_size=landscape_16_9' alt='视频封面' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1'>
+        <i class='fas fa-play text-xs'>
+        </i>
+<span >
+        2:47
+    </span>
+    </div>
+    </div>
+<div class='p-3'>
+        <h3 class='font-medium text-gray-900 mb-2 line-clamp-1'>
+        巧用矿泉水瓶展示大气压强
+    </h3>
+<div class='flex flex-wrap gap-1.5 mb-3'>
+        <span class='px-2 py-0.5 bg-blue-50 text-primary text-xs rounded'>
+        国家级一等奖
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        力学探究
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        低成本实验
+    </span>
+    </div>
+<div class='flex items-center justify-between text-xs text-gray-500'>
+        <div class='flex items-center gap-3'>
+        <span class='flex items-center gap-1'>
+        <i class='fas fa-eye'>
+        </i>
+2.3k
+    </span>
+<span class='flex items-center gap-1'>
+        <i class='fas fa-flask'>
+        </i>
+配套器材 4 件
+    </span>
+    </div>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' data-uuid='video_detail' onclick='handleMenuClick(this)' class='block bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=magdeburg%20hemispheres%20physics%20experiment%20demonstration,%20professional%20teaching%20experiment%20on%20blue%20background&image_size=landscape_16_9' alt='视频封面' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1'>
+        <i class='fas fa-play text-xs'>
+        </i>
+<span >
+        3:12
+    </span>
+    </div>
+    </div>
+<div class='p-3'>
+        <h3 class='font-medium text-gray-900 mb-2 line-clamp-1'>
+        马德堡半球实验创新改进设计
+    </h3>
+<div class='flex flex-wrap gap-1.5 mb-3'>
+        <span class='px-2 py-0.5 bg-green-50 text-secondary text-xs rounded'>
+        省级一等奖
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        经典实验
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        八年级
+    </span>
+    </div>
+<div class='flex items-center justify-between text-xs text-gray-500'>
+        <div class='flex items-center gap-3'>
+        <span class='flex items-center gap-1'>
+        <i class='fas fa-eye'>
+        </i>
+1.8k
+    </span>
+<span class='flex items-center gap-1'>
+        <i class='fas fa-flask'>
+        </i>
+配套器材 2 件
+    </span>
+    </div>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' data-uuid='video_detail' onclick='handleMenuClick(this)' class='block bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=simple%20barometer%20diy%20experiment%20with%20glass%20bottle,%20homemade%20teaching%20equipment&image_size=landscape_16_9' alt='视频封面' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1'>
+        <i class='fas fa-play text-xs'>
+        </i>
+<span >
+        1:58
+    </span>
+    </div>
+    </div>
+<div class='p-3'>
+        <h3 class='font-medium text-gray-900 mb-2 line-clamp-1'>
+        自制气压计探究气压变化
+    </h3>
+<div class='flex flex-wrap gap-1.5 mb-3'>
+        <span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        学生活动
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        自制教具
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        八年级下册
+    </span>
+    </div>
+<div class='flex items-center justify-between text-xs text-gray-500'>
+        <div class='flex items-center gap-3'>
+        <span class='flex items-center gap-1'>
+        <i class='fas fa-eye'>
+        </i>
+3.1k
+    </span>
+<span class='flex items-center gap-1'>
+        <i class='fas fa-flask'>
+        </i>
+配套器材 5 件
+    </span>
+    </div>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' data-uuid='video_detail' onclick='handleMenuClick(this)' class='block bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=torricelli%20experiment%20mercury%20barometer%20physics%20teaching%20demonstration&image_size=landscape_16_9' alt='视频封面' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1'>
+        <i class='fas fa-play text-xs'>
+        </i>
+<span >
+        2:21
+    </span>
+    </div>
+    </div>
+<div class='p-3'>
+        <h3 class='font-medium text-gray-900 mb-2 line-clamp-1'>
+        托里拆利实验安全改进方案
+    </h3>
+<div class='flex flex-wrap gap-1.5 mb-3'>
+        <span class='px-2 py-0.5 bg-blue-50 text-primary text-xs rounded'>
+        创新实验
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        中考重点
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        安全改进
+    </span>
+    </div>
+<div class='flex items-center justify-between text-xs text-gray-500'>
+        <div class='flex items-center gap-3'>
+        <span class='flex items-center gap-1'>
+        <i class='fas fa-eye'>
+        </i>
+4.2k
+    </span>
+<span class='flex items-center gap-1'>
+        <i class='fas fa-flask'>
+        </i>
+配套器材 3 件
+    </span>
+    </div>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' data-uuid='video_detail' onclick='handleMenuClick(this)' class='block bg-white rounded-xl overflow-hidden shadow-sm'>
+        <div class='relative'>
+        <img src='https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=boiling%20water%20with%20reduced%20pressure%20experiment,%20physics%20demonstration%20glass%20flask&image_size=landscape_16_9' alt='视频封面' class='w-full h-48 object-cover'/>
+<div class='absolute bottom-2 right-2 bg-black/60 text-white text-xs px-2 py-0.5 rounded flex items-center gap-1'>
+        <i class='fas fa-play text-xs'>
+        </i>
+<span >
+        2:55
+    </span>
+    </div>
+    </div>
+<div class='p-3'>
+        <h3 class='font-medium text-gray-900 mb-2 line-clamp-1'>
+        气压与沸点关系趣味实验
+    </h3>
+<div class='flex flex-wrap gap-1.5 mb-3'>
+        <span class='px-2 py-0.5 bg-green-50 text-secondary text-xs rounded'>
+        市级一等奖
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        趣味拓展
+    </span>
+<span class='px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded'>
+        九年级
+    </span>
+    </div>
+<div class='flex items-center justify-between text-xs text-gray-500'>
+        <div class='flex items-center gap-3'>
+        <span class='flex items-center gap-1'>
+        <i class='fas fa-eye'>
+        </i>
+1.5k
+    </span>
+<span class='flex items-center gap-1'>
+        <i class='fas fa-flask'>
+        </i>
+配套器材 6 件
+    </span>
+    </div>
+    </div>
+    </div>
+    </a>
+    </div>
+<div class='text-center py-6 text-sm text-gray-500'>
+        <i class='fas fa-spinner fa-spin mr-2'>
+        </i>
+加载更多结果
+    </div>
+    </div>
+<div id='filterMask' class='mask fixed inset-0 bg-black/50 z-50 transition-opacity'>
+        </div>
+<div id='filterDrawer' class='filter-drawer fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl z-50 max-h-[70vh] overflow-y-auto'>
+        <div class='p-4'>
+        <div class='flex justify-between items-center mb-6'>
+        <h3 class='text-lg font-semibold text-gray-900'>
+        筛选
+    </h3>
+<button id='closeFilter' class='text-gray-500 text-xl'>
+        <i class='fas fa-times'>
+        </i>
+    </button>
+    </div>
+<div class='mb-6'>
+        <h4 class='text-sm font-medium text-gray-800 mb-3'>
+        适用年级
+    </h4>
+<div class='flex flex-wrap gap-2'>
+        <button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        八年级上册
+    </button>
+<button class='px-4 py-2 bg-primary text-white rounded-lg text-sm'>
+        八年级下册
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        九年级全册
+    </button>
+    </div>
+    </div>
+<div class='mb-6'>
+        <h4 class='text-sm font-medium text-gray-800 mb-3'>
+        实验类型
+    </h4>
+<div class='flex flex-wrap gap-2'>
+        <button class='px-4 py-2 bg-primary text-white rounded-lg text-sm'>
+        力学探究
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        电学实验
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        光学实验
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        热学实验
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        创新实验
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        经典实验
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        低成本自制教具
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        中考必做
+    </button>
+    </div>
+    </div>
+<div class='mb-6'>
+        <h4 class='text-sm font-medium text-gray-800 mb-3'>
+        获奖等级
+    </h4>
+<div class='flex flex-wrap gap-2'>
+        <button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        不限
+    </button>
+<button class='px-4 py-2 bg-primary text-white rounded-lg text-sm'>
+        国家级获奖
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        省级获奖
+    </button>
+<button class='px-4 py-2 bg-gray-100 text-gray-600 rounded-lg text-sm'>
+        市级获奖
+    </button>
+    </div>
+    </div>
+<div class='flex gap-3 pt-4 border-t'>
+        <button class='flex-1 px-4 py-3 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium'>
+        重置
+    </button>
+<button class='flex-1 px-4 py-3 bg-primary text-white rounded-lg text-sm font-medium'>
+        确认筛选
+    </button>
+    </div>
+    </div>
+    </div>
+<script >function handleMenuClick(element) {
+  var uuid = element.getAttribute('data-uuid');
+  window.top.postMessage(uuid, '*');
+}
+var filterBtn = document.getElementById('filterBtn');
+var closeFilter = document.getElementById('closeFilter');
+var filterDrawer = document.getElementById('filterDrawer');
+var filterMask = document.getElementById('filterMask');
+filterBtn.addEventListener('click', function () {
+  filterDrawer.classList.remove('hidden');
+  filterMask.classList.remove('hidden');
+});
+function closeFilterDrawer() {
+  filterDrawer.classList.add('hidden');
+  filterMask.classList.add('hidden');
+}
+closeFilter.addEventListener('click', closeFilterDrawer);
+filterMask.addEventListener('click', closeFilterDrawer);</script>
+    </body>
+    </html>

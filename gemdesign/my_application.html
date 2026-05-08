@@ -1,0 +1,280 @@
+<html lang='zh-CN'>
+        <head >
+        <meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title >我的申请记录 - 理课研习社</title>
+<script src='https://cdn.tailwindcss.com'></script>
+<link href='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+<script >tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        secondary: '#0d9488',
+        lightblue: '#eff6ff',
+        lightgray: '#f3f4f6'
+      }
+    }
+  }
+};</script>
+<style type='text/tailwindcss'>
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+<style >
+        .status-badge.pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .status-badge.processing {
+            background-color: #dbeafe;
+            color: #1d4ed8;
+        }
+        .status-badge.shipped {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .status-badge.completed {
+            background-color: #e5e7eb;
+            color: #4b5563;
+        }
+    </style>
+    </head>
+<body class='bg-gray-50 min-h-screen'>
+        <div class='p-4'>
+        <div class='mb-6'>
+        <h1 class='text-[22px] font-bold text-gray-800 mb-1'>
+        我的申请记录
+    </h1>
+<p class='text-gray-500 text-sm'>
+        查看您提交的所有免费试用申请
+    </p>
+    </div>
+<div class='space-y-4'>
+        <a href='javascript:void(0);' class='block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow' data-uuid='application_detail' onclick='handleMenuClick(this)'>
+        <div class='p-4'>
+        <div class='flex justify-between items-start mb-3'>
+        <h3 class='text-lg font-semibold text-gray-800'>
+        巧用矿泉水瓶展示大气压强
+    </h3>
+<span class='status-badge pending px-3 py-1 rounded-full text-xs font-medium'>
+        等待处理
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-flask mr-2'>
+        </i>
+<span >
+        配套器材
+    </span>
+    </div>
+<span class='text-gray-800 font-medium'>
+        5 件
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-calendar-alt mr-2'>
+        </i>
+<span >
+        提交时间
+    </span>
+    </div>
+<span class='text-gray-800'>
+        2024-01-15 14:30
+    </span>
+    </div>
+<div class='pt-3 border-t border-gray-100 flex justify-end'>
+        <span class='text-primary text-sm font-medium flex items-center'>
+        查看详情
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </span>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' class='block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow' data-uuid='application_detail' onclick='handleMenuClick(this)'>
+        <div class='p-4'>
+        <div class='flex justify-between items-start mb-3'>
+        <h3 class='text-lg font-semibold text-gray-800'>
+        探究滑动摩擦力影响因素
+    </h3>
+<span class='status-badge processing px-3 py-1 rounded-full text-xs font-medium'>
+        已电话联系
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-flask mr-2'>
+        </i>
+<span >
+        配套器材
+    </span>
+    </div>
+<span class='text-gray-800 font-medium'>
+        8 件
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-calendar-alt mr-2'>
+        </i>
+<span >
+        提交时间
+    </span>
+    </div>
+<span class='text-gray-800'>
+        2024-01-10 09:15
+    </span>
+    </div>
+<div class='pt-3 border-t border-gray-100 flex justify-end'>
+        <span class='text-primary text-sm font-medium flex items-center'>
+        查看详情
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </span>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' class='block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow' data-uuid='application_detail' onclick='handleMenuClick(this)'>
+        <div class='p-4'>
+        <div class='flex justify-between items-start mb-3'>
+        <h3 class='text-lg font-semibold text-gray-800'>
+        伏安法测电阻实验套装
+    </h3>
+<span class='status-badge shipped px-3 py-1 rounded-full text-xs font-medium'>
+        样品已发货
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-flask mr-2'>
+        </i>
+<span >
+        配套器材
+    </span>
+    </div>
+<span class='text-gray-800 font-medium'>
+        6 件
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-calendar-alt mr-2'>
+        </i>
+<span >
+        提交时间
+    </span>
+    </div>
+<span class='text-gray-800'>
+        2024-01-05 16:45
+    </span>
+    </div>
+<div class='pt-3 border-t border-gray-100 flex justify-end'>
+        <span class='text-primary text-sm font-medium flex items-center'>
+        查看详情
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </span>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' class='block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow' data-uuid='application_detail' onclick='handleMenuClick(this)'>
+        <div class='p-4'>
+        <div class='flex justify-between items-start mb-3'>
+        <h3 class='text-lg font-semibold text-gray-800'>
+        杠杆平衡条件实验器
+    </h3>
+<span class='status-badge completed px-3 py-1 rounded-full text-xs font-medium'>
+        已完成
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-flask mr-2'>
+        </i>
+<span >
+        配套器材
+    </span>
+    </div>
+<span class='text-gray-800 font-medium'>
+        3 件
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-calendar-alt mr-2'>
+        </i>
+<span >
+        提交时间
+    </span>
+    </div>
+<span class='text-gray-800'>
+        2023-12-28 11:20
+    </span>
+    </div>
+<div class='pt-3 border-t border-gray-100 flex justify-end'>
+        <span class='text-primary text-sm font-medium flex items-center'>
+        查看详情
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </span>
+    </div>
+    </div>
+    </a>
+<a href='javascript:void(0);' class='block bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-md transition-shadow' data-uuid='application_detail' onclick='handleMenuClick(this)'>
+        <div class='p-4'>
+        <div class='flex justify-between items-start mb-3'>
+        <h3 class='text-lg font-semibold text-gray-800'>
+        串联并联电路实验盒
+    </h3>
+<span class='status-badge completed px-3 py-1 rounded-full text-xs font-medium'>
+        已完成
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-flask mr-2'>
+        </i>
+<span >
+        配套器材
+    </span>
+    </div>
+<span class='text-gray-800 font-medium'>
+        12 件
+    </span>
+    </div>
+<div class='flex items-center justify-between mb-2'>
+        <div class='flex items-center text-gray-600'>
+        <i class='fas fa-calendar-alt mr-2'>
+        </i>
+<span >
+        提交时间
+    </span>
+    </div>
+<span class='text-gray-800'>
+        2023-12-15 08:40
+    </span>
+    </div>
+<div class='pt-3 border-t border-gray-100 flex justify-end'>
+        <span class='text-primary text-sm font-medium flex items-center'>
+        查看详情
+<i class='fas fa-chevron-right ml-1 text-xs'>
+        </i>
+    </span>
+    </div>
+    </div>
+    </a>
+    </div>
+    </div>
+<script >function handleMenuClick(element) {
+  var uuid = element.getAttribute('data-uuid');
+  window.top.postMessage(uuid, '*');
+}
+ytSendPageSize();</script>
+    </body>
+    </html>

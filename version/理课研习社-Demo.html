@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>理课研习社 - Demo</title>
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-light: #3B82F6;
+            --accent: #F59E0B;
+            --bg: #F6F8FB;
+            --text: #1F2937;
+            --text-secondary: #6B7280;
+            --card-bg: #FFFFFF;
+            --border: #E5E7EB;
+            --success: #10B981;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: #E5E7EB;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .phone-frame {
+            width: 375px;
+            height: 700px;
+            background: var(--bg);
+            border-radius: 36px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            position: relative;
+            border: 8px solid #1F2937;
+            outline: 2px solid #4B5563;
+        }
+        #main-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 50px;
+            overflow: hidden;
+            background: var(--bg);
+            transition: bottom 0.2s;
+        }
+        #tabbar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background: #FFFFFF;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            z-index: 10;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.03);
+        }
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #9CA3AF;
+            transition: color 0.2s;
+            cursor: pointer;
+            flex: 1;
+            height: 100%;
+        }
+        .tab-item.active {
+            color: var(--primary);
+            font-weight: 600;
+        }
+        .tab-icon {
+            font-size: 22px;
+            margin-bottom: 1px;
+        }
+        #popup-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 50;
+            pointer-events: none;
+        }
+        #popup-container.popup-show {
+            pointer-events: auto;
+        }
+        .popup-mask {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .popup-show .popup-mask {
+            opacity: 1;
+        }
+        .popup-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 20px 20px 0 0;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            max-height: 75%;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .popup-show .popup-content {
+            transform: translateY(0);
+        }
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            background: #fff;
+            z-index: 1;
+        }
+        .popup-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .popup-close {
+            font-size: 24px;
+            color: #9CA3AF;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .popup-body {
+            padding: 16px 20px 20px;
+            flex: 1;
+        }
+        #toast {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 14px;
+            z-index: 60;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        #toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        .page {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            background: var(--bg);
+        }
+        .subpage-header {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: #fff;
+            position: sticky;
+            top: 0;
+            z-index: 5;
+            border-bottom: 1px solid var(--border);
+        }
+        .back-btn {
+            font-size: 20px;
+            margin-right: 12px;
+            cursor: pointer;
+            color: var(--text);
+            line-height: 1;
+        }
+        .subpage-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text);
+        }
+        .lesson-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 0 16px 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+        .lesson-card:active {
+            transform: scale(0.98);
+        }
+        .card-cover {
+            height: 140px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+        .card-cover .play-icon {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+        .card-body {
+            padding: 10px 12px;
+        }
+        .card-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 500;
+        }
+        .tag-blue {
+            background: #EFF6FF;
+            color: #2563EB;
+        }
+        .tag-orange {
+            background: #FFF7ED;
+            color: #F59E0B;
+        }
+        .tag-green {
+            background: #ECFDF5;
+            color: #10B981;
+        }
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        .btn-accent {
+            background: var(--accent);
+            color: white;
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        .video-scroll {
+            height: 100%;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory;
+            background: #000;
+            position: relative;
+        }
+        .video-item {
+            height: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            background: #000;
+        }
+        .video-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .video-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+            pointer-events: none;
+        }
+        .video-info {
+            position: absolute;
+            bottom: 20px;
+            left: 16px;
+            right: 80px;
+            color: white;
+            z-index: 2;
+        }
+        .video-info .title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+        }
+        .video-actions {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 2;
+        }
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            font-size: 12px;
+            background: rgba(0, 0, 0, 0.35);
+            backdrop-filter: blur(6px);
+            border-radius: 12px;
+            padding: 8px 4px;
+            width: 48px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: none;
+            outline: none;
+            font-family: inherit;
+        }
+        .action-btn:active {
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .action-btn .icon {
+            font-size: 24px;
+            margin-bottom: 2px;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 6px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .list-item {
+            background: #fff;
+            margin: 0 16px 12px;
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .status-pending {
+            background: #FEF3C7;
+            color: #D97706;
+        }
+        .status-contacted {
+            background: #DBEAFE;
+            color: #2563EB;
+        }
+        .status-shipped {
+            background: #D1FAE5;
+            color: #059669;
+        }
+        .filter-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            scrollbar-width: none;
+        }
+        .filter-tabs::-webkit-scrollbar {
+            display: none;
+        }
+        .filter-tab {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: #F3F4F6;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .filter-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        .banner {
+            margin: 12px 16px;
+            background: linear-gradient(135deg, #2563EB, #3B82F6);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .banner-text h2 {
+            font-size: 18px;
+            margin: 0 0 4px;
+            font-weight: 700;
+        }
+        .banner-text p {
+            margin: 0;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+        .banner-icon {
+            font-size: 40px;
+        }
+        .quick-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0 16px 12px;
+        }
+        .quick-nav-item {
+            background: #fff;
+            border-radius: 12px;
+            padding: 14px 12px;
+            flex: 1 1 calc(33.33% - 10px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            transition: background 0.2s;
+        }
+        .quick-nav-item:active {
+            background: #F3F4F6;
+        }
+        .quick-nav-item .icon {
+            font-size: 28px;
+            margin-bottom: 6px;
+        }
+        .quick-nav-item .label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+        }
+        .profile-header {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 30px 0;
+        }
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            margin: 0 auto 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+        .profile-name {
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .profile-school {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .stat-item {
+            text-align: center;
+        }
+        .stat-num {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 18px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .menu-list {
+            margin: 0 16px;
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .menu-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            color: var(--text);
+        }
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        .menu-item .arrow {
+            color: #9CA3AF;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <div class="phone-frame" id="phoneFrame">
+        <div id="main-container"></div>
+        <div id="tabbar">
+            <div class="tab-item active" data-page="home" onclick="switchTab('home')">
+                <span class="tab-icon">🏠</span>
+                <span class="tab-text">首页</span>
+            </div>
+            <div class="tab-item" data-page="category" onclick="switchTab('category')">
+                <span class="tab-icon">📚</span>
+                <span class="tab-text">研习</span>
+            </div>
+            <div class="tab-item" data-page="profile" onclick="switchTab('profile')">
+                <span class="tab-icon">👤</span>
+                <span class="tab-text">我的</span>
+            </div>
+        </div>
+        <div id="popup-container">
+            <div class="popup-mask" onclick="closePopup()"></div>
+            <div class="popup-content">
+                <div class="popup-header">
+                    <span class="popup-title" id="popupTitle"></span>
+                    <span class="popup-close" onclick="closePopup()">×</span>
+                </div>
+                <div class="popup-body" id="popupBody"></div>
+            </div>
+        </div>
+        <div id="toast"></div>
+    </div>
+    <script>
+        // ====================  Mock 数据 ====================
+        const lessonList = [
+            { id: 1, title: "巧用矿泉水瓶展示大气压强", teacher: "张老师", school: "江苏省南京市XX中学", grade: "八年级", knowledge: "压强与浮力", tags: ["国家级一等奖", "力学探究", "低成本自制教具"], heat: 12800, coverColor: '#E0F2FE', coverEmoji: '🧪', desc: "通过生活化材料展示大气压强现象，适合作为八年级物理导入实验。", materials: [1, 2, 3] },
+            { id: 2, title: "探究凸透镜成像规律", teacher: "王老师", school: "浙江省杭州市XX中学", grade: "八年级", knowledge: "光学", tags: ["中考必做", "光学实验"], heat: 8560, coverColor: '#FEF3C7', coverEmoji: '🔍', desc: "经典光学实验，清晰展示凸透镜成像特点。", materials: [4, 5] },
+            { id: 3, title: "滑动变阻器的正确连接", teacher: "李老师", school: "北京市XX中学", grade: "九年级", knowledge: "电学", tags: ["名师创新", "电学实验"], heat: 6200, coverColor: '#D1FAE5', coverEmoji: '⚡', desc: "电学实验中滑动变阻器的接法与注意事项。", materials: [6, 7] },
+            { id: 4, title: "自制简易密度计", teacher: "刘老师", school: "广东省广州市XX中学", grade: "八年级", knowledge: "力学", tags: ["低成本自制教具", "力学探究"], heat: 4700, coverColor: '#FEE2E2', coverEmoji: '🧴', desc: "利用吸管和橡皮泥制作密度计，理解浮力原理。", materials: [8] },
+            { id: 5, title: "探究液体内部压强规律", teacher: "陈老师", school: "上海市XX中学", grade: "九年级", knowledge: "压强", tags: ["名师创新", "力学探究"], heat: 3900, coverColor: '#E0E7FF', coverEmoji: '💧', desc: "使用微小压强计探究液体压强与深度的关系。", materials: [1, 3] },
+            { id: 6, title: "光的反射定律演示", teacher: "周老师", school: "湖北省武汉市XX中学", grade: "八年级", knowledge: "光学", tags: ["中考必做", "光学实验"], heat: 5100, coverColor: '#FCE7F3', coverEmoji: '💡', desc: "通过激光笔和平面镜展示光的反射定律。", materials: [9, 10] },
+            { id: 7, title: "电流表与电压表使用", teacher: "吴老师", school: "四川省成都市XX中学", grade: "九年级", knowledge: "电学", tags: ["名师创新", "电学实验"], heat: 3400, coverColor: '#E5E7EB', coverEmoji: '🔌', desc: "电路实验中正确连接电流表和电压表。", materials: [7, 11] },
+            { id: 8, title: "利用乒乓球演示浮力", teacher: "郑老师", school: "山东省济南市XX中学", grade: "八年级", knowledge: "力学", tags: ["低成本自制教具", "力学探究"], heat: 2800, coverColor: '#D1FAE5', coverEmoji: '🏓', desc: "用乒乓球和重物演示浮力产生原理。", materials: [12, 13] }
+        ];
+        const materialList = [
+            { id: 1, name: "微小压强计", count: "1套", usage: "用于观察液体内部压强变化" },
+            { id: 2, name: "大烧杯", count: "2个", usage: "用于盛水观察实验现象" },
+            { id: 3, name: "特殊支架", count: "1套", usage: "用于固定实验装置" },
+            { id: 4, name: "凸透镜", count: "1个", usage: "焦距10cm，用于成像实验" },
+            { id: 5, name: "光具座", count: "1套", usage: "带刻度导轨，方便测量物距像距" },
+            { id: 6, name: "滑动变阻器", count: "1个", usage: "50Ω 1.5A，用于改变电路电阻" },
+            { id: 7, name: "电流表", count: "1个", usage: "用于测量电路中的电流" },
+            { id: 8, name: "自制密度计套件", count: "1套", usage: "包含吸管、橡皮泥等材料" },
+            { id: 9, name: "激光笔", count: "1支", usage: "用于演示光路" },
+            { id: 10, name: "平面镜", count: "1块", usage: "配合激光笔演示反射定律" },
+            { id: 11, name: "电压表", count: "1个", usage: "用于测量电路两端电压" },
+            { id: 12, name: "乒乓球", count: "1个", usage: "用于浮力演示" },
+            { id: 13, name: "重物", count: "1块", usage: "配合乒乓球演示" }
+        ];
+
+        // 由于部分 materials 已在对象中定义，无需额外关联
+
+        // ==================== 全局状态 ====================
+        let currentPage = 'home';
+        let currentParams = {};
+        let pageHistory = [];
+        const favorites = new Set([1, 3]);
+        let applyRecords = [
+            { id: 1, type: '免费试用', lessonTitle: '巧用矿泉水瓶展示大气压强', materials: ['微小压强计', '大烧杯', '特殊支架'], status: '等待处理', submitTime: '2026-04-29 15:30' },
+            { id: 2, type: '免费试用', lessonTitle: '滑动变阻器的正确连接', materials: ['滑动变阻器', '电流表'], status: '已电话联系', submitTime: '2026-04-25 10:15' }
+        ];
+        let purchaseOrders = [
+            { id: 1, lessonTitle: '巧用矿泉水瓶展示大气压强', school: '南京市XX中学', createdAt: '2026-04-28', status: '已导出' }
+        ];
+
+        // ==================== DOM元素 ====================
+        const mainContainer = document.getElementById('main-container');
+        const tabbar = document.getElementById('tabbar');
+        const popupContainer = document.getElementById('popup-container');
+        const toastEl = document.getElementById('toast');
+
+        // ==================== 工具函数 ====================
+        function getMaterialsByLesson(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            if (!lesson || !lesson.materials) return [];
+            return lesson.materials.map(mid => materialList.find(m => m.id === mid)).filter(Boolean);
+        }
+
+        function filterLessons(filter, query) {
+            let list = lessonList;
+            const lower = query ? query.toLowerCase() : '';
+            if (filter === 'grade8') list = list.filter(l => l.grade === '八年级');
+            else if (filter === 'grade9') list = list.filter(l => l.grade === '九年级');
+            else if (filter === 'exam') list = list.filter(l => l.tags.includes('中考必做'));
+            else if (filter === 'innovation') list = list.filter(l => l.tags.includes('名师创新'));
+            else if (filter === 'lowcost') list = list.filter(l => l.tags.includes('低成本自制教具'));
+            else if (filter === 'search' && query) {
+                list = list.filter(l =>
+                    l.title.toLowerCase().includes(lower) ||
+                    l.teacher.toLowerCase().includes(lower) ||
+                    l.desc.toLowerCase().includes(lower) ||
+                    l.tags.some(t => t.toLowerCase().includes(lower))
+                );
+            }
+            return list;
+        }
+
+        function showToast(msg) {
+            if (window.toastTimer) clearTimeout(window.toastTimer);
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            window.toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
+        }
+
+        function closePopup() {
+            popupContainer.classList.remove('popup-show');
+        }
+
+        function showMaterialsPopup(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            if (!lesson) return;
+            const materials = getMaterialsByLesson(lessonId);
+            let html = `<p style="margin:0 0 12px;font-size:14px;color:var(--text-secondary);">共 ${materials.length} 件器材，适用于本课实验</p>`;
+            materials.forEach(m => {
+                html += `<div style="background:#F9FAFB; border-radius:8px; padding:10px; margin-bottom:8px;">
+                    <div style="font-weight:600;font-size:14px;">${m.name} × ${m.count}</div>
+                    <div style="font-size:12px;color:var(--text-secondary);">${m.usage}</div>
+                </div>`;
+            });
+            html += `<div style="display:flex; gap:10px; margin-top:16px;">
+                <button class="btn btn-outline" style="flex:1;" onclick="closeAndNavigate('purchase', {lessonId:${lessonId}})">导出采购意向单</button>
+                <button class="btn btn-accent" style="flex:1;" onclick="closeAndNavigate('apply', {lessonId:${lessonId}})">申请免费试用</button>
+            </div>`;
+            document.getElementById('popupBody').innerHTML = html;
+            document.getElementById('popupTitle').textContent = '本课实验器材包';
+            popupContainer.classList.add('popup-show');
+        }
+
+        function showPlanPopup(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            let html = `<p style="margin-bottom:12px;">《${lesson.title}》完整教案</p>
+                <div style="background:#F3F4F6; border-radius:8px; padding:10px; word-break:break-all; font-size:13px; margin-bottom:12px;">https://example.com/plans/${lesson.id}?token=demo</div>
+                <button class="btn btn-primary" onclick="copyText('https://example.com/plans/${lesson.id}?token=demo')">复制下载链接</button>`;
+            document.getElementById('popupBody').innerHTML = html;
+            document.getElementById('popupTitle').textContent = '教案下载';
+            popupContainer.classList.add('popup-show');
+        }
+
+        function copyText(text) {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => showToast('链接已复制，可到浏览器下载'));
+            } else {
+                showToast('链接已复制（手动复制）');
+            }
+            closePopup();
+        }
+
+        function closeAndNavigate(page, params) {
+            closePopup();
+            navigateTo(page, params);
+        }
+
+        function toggleFav(id, el) {
+            if (favorites.has(id)) {
+                favorites.delete(id);
+                if (el) el.querySelector('.fav-icon').textContent = '☆';
+                showToast('已取消收藏');
+            } else {
+                favorites.add(id);
+                if (el) el.querySelector('.fav-icon').textContent = '★';
+                showToast('已加入收藏');
+            }
+        }
+
+        function shareLesson(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            showToast(`“${lesson.title}”链接已复制，可分享到微信教研群`);
+        }
+
+        // ==================== 导航 ====================
+        function switchTab(page, params = {}) {
+            pageHistory = [];
+            currentPage = page;
+            currentParams = params;
+            render();
+        }
+
+        function navigateTo(page, params = {}) {
+            pageHistory.push({ page: currentPage, params: currentParams });
+            currentPage = page;
+            currentParams = params;
+            render();
+        }
+
+        function goBack() {
+            if (pageHistory.length > 0) {
+                const prev = pageHistory.pop();
+                currentPage = prev.page;
+                currentParams = prev.params;
+            } else {
+                currentPage = 'home';
+                currentParams = {};
+            }
+            render();
+        }
+
+        function navigateToVideo(lessonId) {
+            navigateTo('video', { lessonId });
+        }
+
+        function searchHandler() {
+            const input = document.getElementById('searchInput');
+            if (input) {
+                const q = input.value.trim();
+                if (q) switchTab('category', { filter: 'search', searchQuery: q });
+                else showToast('请输入搜索关键词');
+            }
+        }
+        window.searchHandler = searchHandler;
+
+        // ==================== 表单提交 ====================
+        function submitApply(lessonId) {
+            const name = document.getElementById('applyName')?.value.trim();
+            const school = document.getElementById('applySchool')?.value.trim();
+            const phone = document.getElementById('applyPhone')?.value.trim();
+            if (!name || !school || !phone) {
+                showToast('请填写姓名、学校和联系电话');
+                return;
+            }
+            const lesson = lessonList.find(l => l.id === lessonId);
+            const mats = getMaterialsByLesson(lessonId).map(m => m.name);
+            applyRecords.unshift({
+                id: Date.now(),
+                type: '免费试用',
+                lessonTitle: lesson.title,
+                materials: mats,
+                status: '等待处理',
+                submitTime: new Date().toLocaleString(),
+                name, school, phone
+            });
+            showToast('提交成功，工作人员将在1-3个工作日内联系您');
+            pageHistory = [{ page: 'video', params: { lessonId } }];
+            currentPage = 'records';
+            currentParams = {};
+            render();
+        }
+        window.submitApply = submitApply;
+
+        function exportPurchase(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            purchaseOrders.unshift({
+                id: Date.now(),
+                lessonTitle: lesson.title,
+                school: '南京市XX中学',
+                teacher: '张老师',
+                createdAt: new Date().toLocaleDateString(),
+                status: '已导出'
+            });
+            showToast('采购意向单已生成，可复制后发送给学校总务处');
+        }
+        window.exportPurchase = exportPurchase;
+
+        function copyPurchaseText(lessonId) {
+            const lesson = lessonList.find(l => l.id === lessonId);
+            const mats = getMaterialsByLesson(lessonId);
+            let text = `采购意向单\n\n申请学校：南京市XX中学\n申请教师：张老师\n联系电话：138xxxx0000\n课例名称：${lesson.title}\n\n采购器材：\n`;
+            mats.forEach(m => text += `${m.name}  ${m.count}  ${m.usage}\n`);
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => showToast('采购单内容已复制'));
+            } else {
+                showToast('内容已复制（请手动粘贴）');
+            }
+        }
+        window.copyPurchaseText = copyPurchaseText;
+
+        // ==================== 卡片渲染 ====================
+        function renderLessonCard(lesson) {
+            const matsCount = lesson.materials ? lesson.materials.length : 0;
+            return `
+            <div class="lesson-card" onclick="navigateToVideo(${lesson.id})">
+                <div class="card-cover" style="background-color:${lesson.coverColor};">
+                    <span>${lesson.coverEmoji || '🧪'}</span>
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-body">
+                    <div class="card-title">${lesson.title}</div>
+                    <div class="card-tags">
+                        ${lesson.tags.map(t => `<span class="tag tag-blue">${t}</span>`).join('')}
+                    </div>
+                    <div class="card-meta">
+                        <span>🔥 ${lesson.heat.toLocaleString()} 次研习</span>
+                        <span>🧪 关联 ${matsCount} 件器材</span>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        // ==================== 页面渲染 ====================
+        function renderHome() {
+            return `
+            <div class="page" id="home-page">
+                <div style="padding:12px 16px; background:#fff;">
+                    <div style="display:flex; align-items:center; background:#F3F4F6; border-radius:20px; padding:0 16px;">
+                        <span style="font-size:18px; margin-right:8px;">🔍</span>
+                        <input id="searchInput" type="text" placeholder="搜索教学痛点，如“浮力怎么引入”" style="flex:1; border:none; background:transparent; padding:12px 0; font-size:14px; outline:none;" onkeypress="if(event.key==='Enter')window.searchHandler()">
+                        <span style="font-size:18px; cursor:pointer;" onclick="window.searchHandler()">🔎</span>
+                    </div>
+                </div>
+                <div class="banner">
+                    <div class="banner-text">
+                        <h2>看名师说课，找实验灵感</h2>
+                        <p>全国优秀物理老师教研圈</p>
+                    </div>
+                    <div class="banner-icon">🧑‍🏫</div>
+                </div>
+                <div class="quick-nav">
+                    ${['八年级物理研习','九年级物理研习','中考必做实验','名师创新实验','低成本自制教具'].map((item, idx) => {
+                        const filter = ['grade8','grade9','exam','innovation','lowcost'][idx];
+                        const emoji = ['📘','📙','📝','💡','🧰'][idx];
+                        return `<div class="quick-nav-item" onclick="switchTab('category', {filter:'${filter}'})"><span class="icon">${emoji}</span><span class="label">${item}</span></div>`;
+                    }).join('')}
+                </div>
+                <div style="padding: 0 16px 8px; font-size:16px; font-weight:600; color:var(--text);">今日推荐课例</div>
+                ${lessonList.slice(0,4).map(l => renderLessonCard(l)).join('')}
+            </div>`;
+        }
+
+        function renderCategory() {
+            const filter = currentParams.filter || 'all';
+            const searchQuery = currentParams.searchQuery || '';
+            let title = '课例资源库';
+            if (filter === 'grade8') title = '八年级物理研习';
+            else if (filter === 'grade9') title = '九年级物理研习';
+            else if (filter === 'exam') title = '中考必做实验';
+            else if (filter === 'innovation') title = '名师创新实验';
+            else if (filter === 'lowcost') title = '低成本自制教具';
+            else if (filter === 'search') title = `搜索结果：“${searchQuery}”`;
+            const filtered = filterLessons(filter, searchQuery);
+            const filters = [
+                { key: 'all', label: '全部' }, { key: 'grade8', label: '八年级' }, { key: 'grade9', label: '九年级' },
+                { key: 'exam', label: '中考必做' }, { key: 'innovation', label: '名师创新' }, { key: 'lowcost', label: '低成本' }
+            ];
+            return `
+            <div class="page" id="category-page">
+                <div style="background:#fff; padding: 12px 16px 8px; border-bottom: 1px solid var(--border);">
+                    <div style="font-size:18px; font-weight:700; margin-bottom:10px; color:var(--text);">${title}</div>
+                    <div class="filter-tabs">
+                        ${filters.map(f => `<span class="filter-tab ${filter === f.key ? 'active' : ''}" onclick="switchTab('category', {filter:'${f.key}'})">${f.label}</span>`).join('')}
+                    </div>
+                </div>
+                <div style="padding-top:8px;">
+                    ${filtered.length ? filtered.map(l => renderLessonCard(l)).join('') : '<div class="empty-state">暂无相关课例</div>'}
+                </div>
+            </div>`;
+        }
+
+        function renderVideo() {
+            const contextList = lessonList; // 使用全部课例作为滑动上下文
+            const currentLessonId = currentParams.lessonId || lessonList[0].id;
+            const itemsHtml = contextList.map(lesson => {
+                const isFav = favorites.has(lesson.id);
+                return `
+                <div class="video-item" id="video-${lesson.id}">
+                    <div class="video-bg" style="background-color:${lesson.coverColor};">
+                        <span style="font-size:80px;">${lesson.coverEmoji || '🧪'}</span>
+                        <div class="play-icon" style="width:60px;height:60px;font-size:30px;background:rgba(0,0,0,0.3);backdrop-filter:blur(4px);">▶</div>
+                    </div>
+                    <div class="video-overlay"></div>
+                    <div class="video-info">
+                        <div class="title">${lesson.title}</div>
+                        <div class="card-tags" style="margin-bottom:6px;">${lesson.tags.map(t => `<span class="tag tag-blue" style="background:rgba(255,255,255,0.2);color:white;">${t}</span>`).join('')}</div>
+                        <div style="font-size:12px; opacity:0.9;">🔥 ${lesson.heat.toLocaleString()} 次研习 · ${lesson.grade}</div>
+                    </div>
+                    <div class="video-actions">
+                        <div class="action-btn" onclick="toggleFav(${lesson.id}, this)"><span class="icon fav-icon">${isFav ? '★' : '☆'}</span><span>收藏</span></div>
+                        <div class="action-btn" onclick="shareLesson(${lesson.id})"><span class="icon">↗️</span><span>分享</span></div>
+                        <div class="action-btn" onclick="showMaterialsPopup(${lesson.id})"><span class="icon">🧪</span><span>本课器材</span></div>
+                        <div class="action-btn" onclick="showPlanPopup(${lesson.id})"><span class="icon">📄</span><span>教案</span></div>
+                    </div>
+                </div>`;
+            }).join('');
+            return `
+            <div class="video-scroll" id="videoScrollContainer">
+                <div style="position:absolute; top:16px; left:12px; z-index:20; width:36px; height:36px; background:rgba(0,0,0,0.5); border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:18px; backdrop-filter:blur(4px); cursor:pointer;" onclick="goBack()">←</div>
+                ${itemsHtml}
+            </div>`;
+        }
+
+        function renderApply() {
+            const lessonId = currentParams.lessonId;
+            const lesson = lessonList.find(l => l.id === lessonId);
+            const materials = getMaterialsByLesson(lessonId);
+            const matsHtml = materials.map(m => `<div style="font-size:13px; margin:4px 0;">• ${m.name} × ${m.count}</div>`).join('');
+            return `
+            <div class="page">
+                <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">申请免费试用</span></div>
+                <div style="padding:16px;">
+                    <div style="background:#fff; border-radius:12px; padding:14px; margin-bottom:16px;">
+                        <div style="font-weight:600; margin-bottom:8px;">您正在申请：</div>
+                        ${matsHtml}
+                        <div style="font-size:12px; color:var(--text-secondary); margin-top:8px;">课例：《${lesson.title}》</div>
+                    </div>
+                    <div class="form-group"><label class="form-label">姓名</label><input class="form-input" id="applyName" placeholder="请输入姓名"></div>
+                    <div class="form-group"><label class="form-label">学校名称</label><input class="form-input" id="applySchool" placeholder="请输入学校名称"></div>
+                    <div class="form-group"><label class="form-label">联系电话</label><input class="form-input" id="applyPhone" placeholder="请输入联系电话"></div>
+                    <div class="form-group"><label class="form-label">所在地区</label><input class="form-input" id="applyRegion" placeholder="省市"></div>
+                    <div class="form-group"><label class="form-label">申请说明</label><textarea class="form-input" id="applyDesc" rows="3" placeholder="如有特殊需求可备注"></textarea></div>
+                    <button class="btn btn-accent" style="width:100%;" onclick="submitApply(${lessonId})">提交申请</button>
+                </div>
+            </div>`;
+        }
+
+        function renderPurchase() {
+            const lessonId = currentParams.lessonId;
+            const lesson = lessonList.find(l => l.id === lessonId);
+            const materials = getMaterialsByLesson(lessonId);
+            const itemHtml = materials.map(m => `<div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #f0f0f0;"><span>${m.name}</span><span>${m.count}</span></div>`).join('');
+            return `
+            <div class="page">
+                <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">采购意向单</span></div>
+                <div style="padding:16px;">
+                    <div style="background:#fff; border-radius:12px; padding:16px;">
+                        <div style="text-align:center; margin-bottom:12px; font-weight:600;">采购意向单预览</div>
+                        <div style="font-size:13px; color:var(--text-secondary);">申请学校：南京市XX中学（Demo）</div>
+                        <div style="font-size:13px; color:var(--text-secondary);">申请教师：张老师</div>
+                        <div style="font-size:13px; color:var(--text-secondary);">联系电话：138xxxx0000</div>
+                        <div style="margin:12px 0; font-weight:600;">课例名称：${lesson.title}</div>
+                        <div style="background:#F9FAFB; border-radius:8px; padding:10px;">${itemHtml}</div>
+                    </div>
+                    <div style="display:flex; gap:10px; margin-top:16px;">
+                        <button class="btn btn-outline" style="flex:1;" onclick="copyPurchaseText(${lessonId})">复制采购单内容</button>
+                        <button class="btn btn-primary" style="flex:1;" onclick="exportPurchase(${lessonId})">模拟导出 Word</button>
+                    </div>
+                </div>
+            </div>`;
+        }
+
+        function renderProfile() {
+            return `
+            <div class="page">
+                <div class="profile-header">
+                    <div class="profile-avatar">👤</div>
+                    <div class="profile-name">张老师</div>
+                    <div class="profile-school">南京市XX中学 物理教师</div>
+                </div>
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-num">${favorites.size}</div><div class="stat-label">收藏课例</div></div>
+                    <div class="stat-item"><div class="stat-num">${applyRecords.length}</div><div class="stat-label">申请记录</div></div>
+                    <div class="stat-item"><div class="stat-num">${purchaseOrders.length}</div><div class="stat-label">采购单</div></div>
+                </div>
+                <div class="menu-list">
+                    <div class="menu-item" onclick="navigateTo('favorites')"><span>⭐ 我的收藏库</span><span class="arrow">›</span></div>
+                    <div class="menu-item" onclick="navigateTo('records')"><span>📋 我的申请记录</span><span class="arrow">›</span></div>
+                    <div class="menu-item" onclick="navigateTo('purchases')"><span>📄 我的采购意向单</span><span class="arrow">›</span></div>
+                    <div class="menu-item" onclick="showToast('客服功能开发中')"><span>💬 联系平台客服</span><span class="arrow">›</span></div>
+                    <div class="menu-item" onclick="showToast('理课研习社 V1.0 Demo')"><span>ℹ️ 关于理课研习社</span><span class="arrow">›</span></div>
+                </div>
+            </div>`;
+        }
+
+        function renderFavorites() {
+            const favLessons = lessonList.filter(l => favorites.has(l.id));
+            return `
+            <div class="page">
+                <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">我的收藏</span></div>
+                <div style="padding-top:8px;">${favLessons.length ? favLessons.map(l => renderLessonCard(l)).join('') : '<div class="empty-state">还没有收藏课例，快去发现吧</div>'}</div>
+            </div>`;
+        }
+
+        function renderRecords() {
+            return `
+            <div class="page">
+                <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">申请记录</span></div>
+                <div style="padding-top:8px;">
+                    ${applyRecords.length ? applyRecords.map(r => {
+                        let statusClass = '';
+                        if (r.status.includes('等待')) statusClass = 'status-pending';
+                        else if (r.status.includes('电话')) statusClass = 'status-contacted';
+                        else if (r.status.includes('发货')) statusClass = 'status-shipped';
+                        else statusClass = 'status-done';
+                        return `<div class="list-item">
+                            <div style="font-weight:600; margin-bottom:6px;">${r.lessonTitle}</div>
+                            <div style="font-size:12px; color:var(--text-secondary); margin-bottom:6px;">器材：${r.materials.join('、')}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span class="status ${statusClass}">${r.status}</span>
+                                <span style="font-size:11px; color:#9CA3AF;">${r.submitTime}</span>
+                            </div>
+                        </div>`;
+                    }).join('') : '<div class="empty-state">暂无申请记录</div>'}
+                </div>
+            </div>`;
+        }
+
+        function renderPurchases() {
+            return `
+            <div class="page">
+                <div class="subpage-header"><span class="back-btn" onclick="goBack()">←</span><span class="subpage-title">采购意向单</span></div>
+                <div style="padding-top:8px;">
+                    ${purchaseOrders.length ? purchaseOrders.map(o => `
+                        <div class="list-item">
+                            <div style="font-weight:600;">${o.lessonTitle}</div>
+                            <div style="font-size:12px; color:var(--text-secondary);">学校：${o.school} · ${o.createdAt}</div>
+                            <div style="font-size:12px; color:var(--text-secondary);">状态：${o.status}</div>
+                        </div>`).join('') : '<div class="empty-state">暂无采购意向单，可在课例中导出</div>'}
+                </div>
+            </div>`;
+        }
+
+        // ==================== 主渲染函数 ====================
+        function render() {
+            const rootPages = ['home', 'category', 'profile'];
+            const showTab = rootPages.includes(currentPage);
+            mainContainer.style.bottom = showTab ? '50px' : '0px';
+            tabbar.style.display = showTab ? 'flex' : 'none';
+            const tabs = tabbar.querySelectorAll('.tab-item');
+            tabs.forEach(tab => {
+                if (tab.dataset.page === currentPage) tab.classList.add('active');
+                else tab.classList.remove('active');
+            });
+
+            let html = '';
+            switch (currentPage) {
+                case 'home': html = renderHome(); break;
+                case 'category': html = renderCategory(); break;
+                case 'profile': html = renderProfile(); break;
+                case 'video': html = renderVideo(); break;
+                case 'apply': html = renderApply(); break;
+                case 'purchase': html = renderPurchase(); break;
+                case 'favorites': html = renderFavorites(); break;
+                case 'records': html = renderRecords(); break;
+                case 'purchases': html = renderPurchases(); break;
+                default: html = renderHome();
+            }
+            mainContainer.innerHTML = html;
+            if (currentPage === 'video') {
+                const lessonId = currentParams.lessonId;
+                if (lessonId) {
+                    setTimeout(() => {
+                        const target = mainContainer.querySelector(`#video-${lessonId}`);
+                        if (target) target.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }, 50);
+                }
+            }
+            closePopup();
+        }
+
+        // 挂载全局函数（用于内联事件）
+        window.switchTab = switchTab;
+        window.navigateTo = navigateTo;
+        window.goBack = goBack;
+        window.navigateToVideo = navigateToVideo;
+        window.toggleFav = toggleFav;
+        window.shareLesson = shareLesson;
+        window.showMaterialsPopup = showMaterialsPopup;
+        window.showPlanPopup = showPlanPopup;
+        window.closeAndNavigate = closeAndNavigate;
+        window.copyText = copyText;
+        window.searchHandler = searchHandler;
+        window.submitApply = submitApply;
+        window.exportPurchase = exportPurchase;
+        window.copyPurchaseText = copyPurchaseText;
+
+        // 初始渲染
+        render();
+    </script>
+</body>
+</html>

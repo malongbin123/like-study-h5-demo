@@ -1,0 +1,175 @@
+<html lang='zh-CN'>
+        <head >
+        <meta charset='UTF-8'/>
+<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
+<title >免费试用申请 - 理课研习社</title>
+<script src='https://cdn.tailwindcss.com'></script>
+<link href='https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css' rel='stylesheet'/>
+<script >tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: '#1e40af',
+        secondary: '#0d9488',
+        lightblue: '#eff6ff',
+        lightgray: '#f3f4f6'
+      }
+    }
+  }
+};</script>
+<style type='text/tailwindcss'>
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+        }
+    </style>
+<style >
+        .form-input {
+            @apply w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all bg-white;
+        }
+        .success-modal.hidden {
+            display: none !important;
+        }
+    </style>
+    </head>
+<body class='bg-gray-50'>
+        <div class='p-4'>
+        <div class='mb-6'>
+        <h1 class='text-[22px] font-bold text-gray-800 mb-2'>
+        申请免费试用
+    </h1>
+<p class='text-gray-500 text-sm'>
+        填写信息后，工作人员将在1-2个工作日内联系您
+    </p>
+    </div>
+<form id='trialForm' class='space-y-4'>
+        <div >
+        <label class='block text-sm font-medium text-gray-700 mb-2'>
+        姓名
+<span class='text-red-500'>
+        *
+    </span>
+    </label>
+<input type='text' name='name' class='form-input' placeholder='请输入您的姓名' required/>
+    </div>
+<div >
+        <label class='block text-sm font-medium text-gray-700 mb-2'>
+        学校名称
+<span class='text-red-500'>
+        *
+    </span>
+    </label>
+<input type='text' name='school' class='form-input' placeholder='请输入您所在学校名称' required/>
+    </div>
+<div >
+        <label class='block text-sm font-medium text-gray-700 mb-2'>
+        联系电话
+<span class='text-red-500'>
+        *
+    </span>
+    </label>
+<input type='tel' name='phone' class='form-input' placeholder='请输入您的手机号码' required/>
+    </div>
+<div >
+        <label class='block text-sm font-medium text-gray-700 mb-2'>
+        所在地区
+<span class='text-red-500'>
+        *
+    </span>
+    </label>
+<select name='region' class='form-input' required>
+        <option value>
+        请选择所在地区
+    </option>
+<option value='北京'>
+        北京
+    </option>
+<option value='上海'>
+        上海
+    </option>
+<option value='广东'>
+        广东
+    </option>
+<option value='江苏'>
+        江苏
+    </option>
+<option value='浙江'>
+        浙江
+    </option>
+<option value='山东'>
+        山东
+    </option>
+<option value='其他'>
+        其他
+    </option>
+    </select>
+    </div>
+<div >
+        <label class='block text-sm font-medium text-gray-700 mb-2'>
+        备注
+<span class='text-gray-400'>
+        (选填)
+    </span>
+    </label>
+<textarea name='remark' rows='3' class='form-input' placeholder='请填写您的其他需求或说明'>
+        </textarea>
+    </div>
+<div class='bg-lightblue rounded-lg p-4 mt-6'>
+        <h3 class='text-sm font-medium text-primary mb-2'>
+        申请信息
+    </h3>
+<div class='flex justify-between text-sm'>
+        <span class='text-gray-600'>
+        申请课例：
+    </span>
+<span class='text-gray-800 font-medium'>
+        巧用矿泉水瓶展示大气压强
+    </span>
+    </div>
+<div class='flex justify-between text-sm mt-1'>
+        <span class='text-gray-600'>
+        器材数量：
+    </span>
+<span class='text-gray-800 font-medium'>
+        5 件
+    </span>
+    </div>
+    </div>
+<div class='pt-4'>
+        <button type='submit' class='w-full py-4 bg-primary text-white rounded-xl font-medium text-base shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all'>
+        提交试用申请
+    </button>
+    </div>
+    </form>
+    </div>
+<div id='successModal' class='success-modal fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 hidden'>
+        <div class='bg-white rounded-2xl p-6 w-full max-w-sm'>
+        <div class='text-center'>
+        <div class='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4'>
+        <i class='fas fa-check text-green-500 text-3xl'>
+        </i>
+    </div>
+<h3 class='text-xl font-bold text-gray-800 mb-2'>
+        申请提交成功
+    </h3>
+<p class='text-gray-600 text-sm mb-6 leading-relaxed'>
+        您的免费试用申请已提交成功，
+<br />
+工作人员将在1-2个工作日内联系您
+    </p>
+<button id='closeSuccess' class='w-full py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary/90 transition-all'>
+        知道了
+    </button>
+    </div>
+    </div>
+    </div>
+<script >document.getElementById('trialForm').addEventListener('submit', function (e) {
+  e.preventDefault();
+  document.getElementById('successModal').classList.remove('hidden');
+});
+document.getElementById('closeSuccess').addEventListener('click', function () {
+  document.getElementById('successModal').classList.add('hidden');
+});</script>
+    </body>
+    </html>
