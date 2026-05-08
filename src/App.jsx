@@ -21,6 +21,7 @@ const tabPaths = ['/discover', '/research', '/equipment', '/profile'];
 function App() {
   const location = useLocation();
   const showTab = tabPaths.includes(location.pathname);
+  const isSwipePage = location.pathname.startsWith('/swipe');
 // 设置移动端真实视口高度
    useEffect(() => {
     const setVH = () => {
@@ -41,22 +42,24 @@ function App() {
   }, []);
   return (
     <div className="phone-frame">
-      <div id="main-container">
-        <Routes>
-          <Route path="/" element={<Navigate to="/discover" />} />
-          <Route path="/discover" element={<DiscoverPage />} />
-          <Route path="/research" element={<ResearchPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/video/:id" element={<VideoPage />} />
-          <Route path="/apply/:id" element={<ApplyPage />} />
-          <Route path="/purchase/:id" element={<PurchasePage />} />
-          <Route path="/equipment" element={<EquipmentPage />} />
-          <Route path="/favorites" element={<FavoritesPage />} />
-          <Route path="/records" element={<RecordsPage />} />
-          <Route path="/purchases" element={<PurchasePage />} />
-          <Route path="/record/:id" element={<RecordDetailPage />} />
-        </Routes>
-      </div>
+      {!isSwipePage && (
+        <div id="main-container">
+          <Routes>
+            <Route path="/" element={<Navigate to="/discover" />} />
+            <Route path="/discover" element={<DiscoverPage />} />
+            <Route path="/research" element={<ResearchPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/apply/:id" element={<ApplyPage />} />
+            <Route path="/purchase/:id" element={<PurchasePage />} />
+            <Route path="/equipment" element={<EquipmentPage />} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/records" element={<RecordsPage />} />
+            <Route path="/purchases" element={<PurchasePage />} />
+            <Route path="/record/:id" element={<RecordDetailPage />} />
+          </Routes>
+        </div>
+      )}
       <Routes>
         <Route path="/swipe/:id" element={<SwipeVideoPage />} />
       </Routes>
