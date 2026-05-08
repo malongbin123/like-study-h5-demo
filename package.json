@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "npm run build && wrangler dev",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "react": "^19.2.5",
@@ -16,6 +17,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.36.3",
     "@eslint/js": "^10.0.1",
     "@fortawesome/fontawesome-free": "^6.4.0",
     "@types/react": "^19.2.14",
@@ -25,6 +27,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.5.0",
-    "vite": "^8.0.10"
+    "vite": "^8.0.10",
+    "wrangler": "^4.90.0"
   }
 }
