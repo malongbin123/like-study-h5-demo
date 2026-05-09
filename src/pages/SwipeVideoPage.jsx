@@ -62,6 +62,108 @@ const formatHeat = (num) => {
   return num;
 };
 
+function SwipeItem({ lesson, isActive, allCovers, onToggleFav, isFav, onComment, onOpenSheet, onFullTalk, onShare, onShowMaterials, mats }) {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (isActive) {
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    } else {
+      video.pause();
+    }
+  }, [isActive]);
+
+  return (
+    <div className="swipe-item">
+      <video
+        ref={videoRef}
+        className="swipe-video"
+        src={lesson.video}
+        muted
+        loop
+        playsInline
+        preload="auto"
+      >
+        <source src={lesson.video} type="video/mp4" />
+      </video>
+
+      <div className="swipe-mask" />
+
+      <div className="swipe-sidebar">
+        <div className={`swipe-side-btn${isFav ? ' liked' : ''}`} onClick={onToggleFav}>
+          <div className="swipe-side-icon">
+            <IconHeart size={28} />
+          </div>
+          <span className="swipe-side-num">{formatHeat(lesson.heat)}</span>
+        </div>
+
+        <div className="swipe-side-btn" onClick={onComment}>
+          <div className="swipe-side-icon">
+            <IconComment size={28} />
+          </div>
+          <span className="swipe-side-num">讨论</span>
+        </div>
+
+        <div className="swipe-side-btn" onClick={onOpenSheet}>
+          <div className="swipe-side-icon">
+            <IconDoc size={28} />
+          </div>
+          <span className="swipe-side-num">教案</span>
+        </div>
+
+        <div className="swipe-side-btn" onClick={onFullTalk}>
+          <div className="swipe-side-icon" style={{ transform: 'none' }}>
+            <IconPlay size={28} />
+          </div>
+          <span className="swipe-side-num">完整版</span>
+        </div>
+
+        <div className="swipe-side-btn" onClick={onShare}>
+          <div className="swipe-side-icon">
+            <IconShare size={26} />
+          </div>
+          <span className="swipe-side-num">分享</span>
+        </div>
+      </div>
+
+      <div className="swipe-bottom-info">
+        <div className="swipe-author">
+          @{lesson.teacher} | {lesson.school}
+        </div>
+        <div className="swipe-title">{lesson.title}</div>
+        <div className="swipe-tags-row">
+          {lesson.grade && <span className="swipe-tag">{lesson.grade}</span>}
+          {lesson.tags && lesson.tags.slice(0, 3).map((t, i) => (
+            <span key={i} className="swipe-tag">{t}</span>
+          ))}
+        </div>
+        <div className="swipe-expand" onClick={onOpenSheet}>
+          查看课例详情与资料 📝
+        </div>
+      </div>
+
+      <div className="swipe-material-bar" onClick={onShowMaterials}>
+        <div className="swipe-mat-imgs">
+          {(lesson.coverImage ? [lesson.coverImage, lesson.coverImage, lesson.coverImage] : allCovers).slice(0, 3).map((src, i) => (
+            <img key={i} src={src} alt="" className="swipe-mat-img" style={{ zIndex: 3 - i }} />
+          ))}
+        </div>
+        <div className="swipe-mat-text">
+          <div className="swipe-mat-title">本课研习配套器材包</div>
+          <div className="swipe-mat-sub">共 {mats.length} 件器材</div>
+        </div>
+        <div className="swipe-mat-btn">
+          <IconList size={14} />
+          查看清单
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function SwipeVideoPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -87,7 +189,6 @@ export default function SwipeVideoPage() {
 
   const currentLesson = sortedLessons[activeIdx] || sortedLessons[0];
   const currentMats = currentLesson ? getMaterialsByLessonId(currentLesson.id) : [];
-  const isFav = currentLesson ? favorites.has(currentLesson.id) : false;
   const allCovers = lessons.map((l) => l.coverImage).filter(Boolean);
 
   useEffect(() => {
@@ -156,26 +257,19 @@ export default function SwipeVideoPage() {
     openPopup(`实验器材清单 · ${currentLesson.title}`, body);
   };
 
-  const handleShare = () => {
-    showToast('已复制分享链接');
-  };
-
-  const handleToggleFav = () => {
-    toggleFavorite(currentLesson.id);
-    showToast(isFav ? '已取消收藏' : '已加入收藏');
-  };
-
-  const handleShowFullTalk = () => {
+  const handleShowFullTalk = (lesson) => {
     const body = (
       <div style={{ textAlign: 'center' }}>
-        <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6 }}>{currentLesson.title}</div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>主讲：{currentLesson.teacher} · {currentLesson.school}</div>
-        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 12 }}>时长约 {currentLesson.fullDuration}</div>
-        <div style={{ background: '#000', borderRadius: 10, height: 180, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <div style={{ width: 60, height: 60, background: 'rgba(0,0,0,0.6)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <IconPlay size={28} />
-          </div>
-        </div>
+        <div style={{ fontWeight: 700, fontSize: 16, marginBottom: 6 }}>{lesson.title}</div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)' }}>主讲：{lesson.teacher} · {lesson.school}</div>
+        <div style={{ fontSize: 13, color: 'var(--text-secondary)', marginBottom: 12 }}>时长约 {lesson.fullDuration}</div>
+        <video
+          style={{ width: '100%', borderRadius: 10, background: '#000', display: 'block' }}
+          src={lesson.fullVideo}
+          controls
+          playsInline
+          preload="metadata"
+        />
       </div>
     );
     openPopup('完整说课录像', body);
@@ -210,94 +304,27 @@ export default function SwipeVideoPage() {
       <div className="swipe-feed" ref={feedRef}>
         {sortedLessons.map((lesson, idx) => {
           const mats = getMaterialsByLessonId(lesson.id);
-          const isCurrent = idx === activeIdx;
+          const itemFav = favorites.has(lesson.id);
           return (
-            <div
+            <SwipeItem
               key={lesson.id}
-              className="swipe-item"
-              style={{ backgroundImage: lesson.coverlongImage ? `url(${lesson.coverlongImage})` : lesson.coverImage ? `url(${lesson.coverImage})` : undefined, backgroundColor: !lesson.coverlongImage && !lesson.coverImage ? '#1a1a2e' : undefined }}
-            >
-              <div className="swipe-item-bg" style={{ backgroundSize: 'cover', backgroundPosition: 'center' }}>
-                <img src={lesson.coverlongImage || lesson.coverImage} alt="" style={{ display: 'none' }} />
-              </div>
-
-              <div className="swipe-play-hint">
-                <div className="swipe-play-circle">
-                  <IconPlay size={20} />
-                </div>
-              </div>
-
-              <div className="swipe-mask" />
-
-              <div className="swipe-sidebar">
-                <div className={`swipe-side-btn${isFav ? ' liked' : ''}`} onClick={handleToggleFav}>
-                  <div className="swipe-side-icon">
-                    <IconHeart size={28} />
-                  </div>
-                  <span className="swipe-side-num">{formatHeat(lesson.heat)}</span>
-                </div>
-
-                <div className="swipe-side-btn" onClick={() => showToast('打开评论区')}>
-                  <div className="swipe-side-icon">
-                    <IconComment size={28} />
-                  </div>
-                  <span className="swipe-side-num">讨论</span>
-                </div>
-
-                <div className="swipe-side-btn" onClick={openSheet}>
-                  <div className="swipe-side-icon">
-                    <IconDoc size={28} />
-                  </div>
-                  <span className="swipe-side-num">教案</span>
-                </div>
-
-                <div className="swipe-side-btn" onClick={handleShowFullTalk}>
-                  <div className="swipe-side-icon" style={{ transform: 'none' }}>
-                    <IconPlay size={28} />
-                  </div>
-                  <span className="swipe-side-num">完整版</span>
-                </div>
-
-                <div className="swipe-side-btn" onClick={handleShare}>
-                  <div className="swipe-side-icon">
-                    <IconShare size={26} />
-                  </div>
-                  <span className="swipe-side-num">分享</span>
-                </div>
-              </div>
-
-              <div className="swipe-bottom-info">
-                <div className="swipe-author">
-                  @{lesson.teacher} | {lesson.school}
-                </div>
-                <div className="swipe-title">{lesson.title}</div>
-                <div className="swipe-tags-row">
-                  {lesson.grade && <span className="swipe-tag">{lesson.grade}</span>}
-                  {lesson.tags && lesson.tags.slice(0, 3).map((t, i) => (
-                    <span key={i} className="swipe-tag">{t}</span>
-                  ))}
-                </div>
-                <div className="swipe-expand" onClick={openSheet}>
-                  查看课例详情与资料 📝
-                </div>
-              </div>
-
-              <div className="swipe-material-bar" onClick={handleShowMaterials}>
-                <div className="swipe-mat-imgs">
-                  {(lesson.coverImage ? [lesson.coverImage, lesson.coverImage, lesson.coverImage] : allCovers).slice(0, 3).map((src, i) => (
-                    <img key={i} src={src} alt="" className="swipe-mat-img" style={{ zIndex: 3 - i }} />
-                  ))}
-                </div>
-                <div className="swipe-mat-text">
-                  <div className="swipe-mat-title">本课研习配套器材包</div>
-                  <div className="swipe-mat-sub">共 {mats.length} 件器材</div>
-                </div>
-                <div className="swipe-mat-btn">
-                  <IconList size={14} />
-                  查看清单
-                </div>
-              </div>
-            </div>
+              lesson={lesson}
+              isActive={idx === activeIdx}
+              allCovers={allCovers}
+              isFav={itemFav}
+              mats={mats}
+              onToggleFav={() => {
+                toggleFavorite(lesson.id);
+                showToast(itemFav ? '已取消收藏' : '已加入收藏');
+              }}
+              onComment={() => showToast('打开评论区')}
+              onOpenSheet={() => setSheetVisible(true)}
+              onFullTalk={() => handleShowFullTalk(lesson)}
+              onShare={() => {
+                showToast('已复制分享链接');
+              }}
+              onShowMaterials={() => handleShowMaterials()}
+            />
           );
         })}
       </div>
@@ -336,7 +363,7 @@ export default function SwipeVideoPage() {
 
           <div className="swipe-sheet-card" style={{ background: 'transparent', boxShadow: 'none', padding: '0 4px' }}>
             <div className="swipe-sheet-card-title">完整教学资源</div>
-            <button className="swipe-sheet-btn-primary" onClick={handleShowFullTalk}>
+            <button className="swipe-sheet-btn-primary" onClick={() => handleShowFullTalk(currentLesson)}>
               <IconPlay size={18} />
               查看完整说课
             </button>

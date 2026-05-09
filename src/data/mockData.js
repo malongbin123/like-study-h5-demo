@@ -4,6 +4,12 @@ import huadongbianzuqi from '../pic/huadongbianzuqi.png';
 import daqiyaqiang1 from '../pic/daqiyaqiang1.png';
 import tutoujing1 from '../pic/tutoujing1.png';
 import huadongbianzuqi1 from '../pic/huadongbianzuqi1.png';
+import daqiyaqiangVideo from '../videos/daqiyaqiang.mp4';
+import daqiyaqiangFullVideo from '../videos/daqiyaqiang_long.mp4';
+import tutoujingVideo from '../videos/tutoujing.mp4';
+import tutoujingFullVideo from '../videos/tutoujing_long.mp4';
+import huadongbianzuqiVideo from '../videos/huadongbianzuqi.mp4';
+import huadongbianzuqiFullVideo from '../videos/huadongbianzuqi_long.mp4';
 export const lessonList = [
   {
     id: 1,
@@ -19,7 +25,9 @@ export const lessonList = [
     materials: [1, 2, 3, 4, 5],
     desc: '通过生活化材料展示大气压强现象，适合作为八年级物理导入实验。',
     fullDuration: '18分钟',
-    shortDuration: '2:15',   // 新增
+    shortDuration: '2:15',
+    video: daqiyaqiangVideo,
+    fullVideo: daqiyaqiangFullVideo,
   },
   {
     id: 2,
@@ -36,6 +44,8 @@ export const lessonList = [
     desc: '经典光学实验，清晰展示凸透镜成像特点。',
     fullDuration: '22分钟',
     shortDuration: '1:48',
+    video: tutoujingVideo,
+    fullVideo: tutoujingFullVideo,
   },
   {
     id: 3,
@@ -52,6 +62,8 @@ export const lessonList = [
     desc: '电学实验中滑动变阻器的接法与注意事项。',
     fullDuration: '19分钟',
     shortDuration: '1:30',
+    video: huadongbianzuqiVideo,
+    fullVideo: huadongbianzuqiFullVideo,
   },
 ];
 
